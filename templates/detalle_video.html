@@ -1,0 +1,88 @@
+{% extends 'base.html' %} {% block titulo %}{{ video.titulo }} - FútbolTube{%
+endblock %} {% block contenido %}
+<div class="row">
+  <div class="col-lg-8">
+    {% if video.tipo == 'youtube' %}
+    <!-- REPRODUCTOR YOUTUBE -->
+    <div
+      class="ratio ratio-16x9 mb-3"
+      style="border-radius: 12px; overflow: hidden"
+    >
+      <iframe src="{{ video.embed_url }}" allowfullscreen></iframe>
+    </div>
+
+    {% elif video.tipo == 'url_directa' %}
+    <!-- REPRODUCTOR VIDEO DIRECTO -->
+    <div
+      class="ratio ratio-16x9 mb-3"
+      style="border-radius: 12px; overflow: hidden; background: #000"
+    >
+      <video controls autoplay>
+        <source src="{{ video.url_video }}" type="video/mp4" />
+        Tu navegador no soporta video HTML5.
+      </video>
+    </div>
+
+    {% elif video.tipo == 'iframe' %}
+    <!-- REPRODUCTOR IFRAME -->
+    <div
+      class="ratio ratio-16x9 mb-3"
+      style="border-radius: 12px; overflow: hidden"
+    >
+      <iframe
+        src="{{ video.url_video }}"
+        allowfullscreen
+        sandbox="allow-scripts allow-same-origin"
+      ></iframe>
+    </div>
+    {% endif %}
+
+    <h4>{{ video.titulo }}</h4>
+    <div class="d-flex gap-2 mb-3">
+      <span class="badge badge-canal">{{ video.canal.nombre }}</span>
+      {% if video.liga %}
+      <span class="badge badge-liga">{{ video.liga.nombre }}</span>
+      {% endif %}
+      <span class="text-muted ms-2"
+        >{{ video.fecha_publicacion|date:"d M Y" }}</span
+      >
+    </div>
+    {% if video.descripcion %}
+    <div class="p-3 mb-4" style="background: #1a1a1a; border-radius: 8px">
+      <p>{{ video.descripcion }}</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="col-lg-4">
+    <h6 class="section-title">Videos Relacionados</h6>
+    {% for rel in relacionados %}
+    <a
+      href="{% url 'canales:detalle_video' rel.pk %}"
+      class="d-flex gap-2 mb-3"
+    >
+      {% if rel.thumbnail_url %}
+      <img
+        src="{{ rel.thumbnail_url }}"
+        alt="{{ rel.titulo }}"
+        style="
+          width: 160px;
+          height: 90px;
+          object-fit: cover;
+          border-radius: 8px;
+        "
+      />
+      {% endif %}
+      <div>
+        <p class="mb-1" style="font-size: 0.85rem; color: #f1f1f1">
+          {{ rel.titulo }}
+        </p>
+        <small class="text-muted">{{ rel.canal.nombre }}</small>
+      </div>
+    </a>
+    {% empty %}
+    <p class="text-muted">No hay videos relacionados.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+<div class="col">
+  <a href="{% url 'canales:detalle_video' video.pk %}">
+    <div class="card card-video position-relative">
+      {% if video.destacado %}
+      <span class="destacado-badge"
+        ><i class="bi bi-star-fill"></i> Destacado</span
+      >
+      {% endif %} {% if video.thumbnail_url %}
+      <img src="{{ video.thumbnail_url }}" alt="{{ video.titulo }}" />
+      {% endif %}
+      <div class="card-body">
+        <h6 class="card-title">{{ video.titulo }}</h6>
+        <p class="card-text mb-1">
+          <span class="badge badge-canal">{{ video.canal.nombre }}</span>
+          {% if video.liga %}
+          <span class="badge badge-liga">{{ video.liga.nombre }}</span>
+          {% endif %}
+        </p>
+        <p class="card-text">{{ video.fecha_publicacion|timesince }} atrás</p>
+      </div>
+    </div>
+  </a>
+</div>

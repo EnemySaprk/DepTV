@@ -1,0 +1,30 @@
+{% extends 'base.html' %} {% block titulo %}{{ canal.nombre }} - FútbolTube{%
+endblock %} {% block contenido %}
+<div class="d-flex align-items-center gap-3 mb-4">
+  {% if canal.logo %}
+  <img
+    src="{{ canal.logo.url }}"
+    alt="{{ canal.nombre }}"
+    style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover"
+  />
+  {% endif %}
+  <div>
+    <h4 class="mb-0">{{ canal.nombre }}</h4>
+    {% if canal.url_sitio %}
+    <a href="{{ canal.url_sitio }}" target="_blank" class="text-muted">
+      <i class="bi bi-link-45deg"></i> {{ canal.url_sitio }}
+    </a>
+    {% endif %}
+  </div>
+</div>
+
+{% if canal.descripcion %}
+<p class="text-muted mb-4">{{ canal.descripcion }}</p>
+{% endif %}
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+  {% for video in videos %} {% include 'includes/video_card.html' %} {% empty %}
+  <p class="text-muted">Este canal no tiene videos todavía.</p>
+  {% endfor %}
+</div>
+{% endblock %}

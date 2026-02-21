@@ -1,0 +1,21 @@
+{% extends 'base.html' %} {% block contenido %} {% if destacados %}
+<section class="mb-5">
+  <h5 class="section-title"><i class="bi bi-star-fill"></i> Destacados</h5>
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+    {% for video in destacados %} {% include 'includes/video_card.html' with
+    video=video %} {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section class="mb-5">
+  <h5 class="section-title"><i class="bi bi-clock-fill"></i> Últimos Videos</h5>
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+    {% for video in ultimos %} {% include 'includes/video_card.html' with
+    video=video %} {% empty %}
+    <p class="text-muted">No hay videos disponibles todavía.</p>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}
