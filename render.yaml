@@ -1,0 +1,19 @@
+﻿databases:
+  - name: futboltube-db
+    plan: free
+    databaseName: futboltube
+
+services:
+  - type: web
+    name: futboltube
+    plan: free
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn config.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.1
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
