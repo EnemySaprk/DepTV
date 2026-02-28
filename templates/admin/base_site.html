@@ -1,0 +1,17 @@
+﻿{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}FutbolTube Admin{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        <span style="color: #0082e6;">&#9917;</span> FutbolTube Admin
+    </a>
+</h1>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/admin_custom.css' %}">
+{% endblock %}

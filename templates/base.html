@@ -1,341 +1,259 @@
-﻿<!doctype html>
+﻿<!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block titulo %}FutbolTube{% endblock %}</title>
-    <link rel="manifest" href="/static/manifest.json" />
-    <meta name="theme-color" content="#1a1a2e" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
-      rel="stylesheet"
-    />
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#070e16">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-      * {
-        box-sizing: border-box;
-      }
-      body {
-        background-color: #0f0f0f;
-        color: #f1f1f1;
-        margin: 0;
-        overflow-x: hidden;
-      }
+        * { box-sizing: border-box; }
+        body {
+            background-color: #070e16;
+            color: #e8e8e8;
+            margin: 0;
+            overflow-x: hidden;
+        }
 
-      /* NAVBAR */
-      .navbar-custom {
-        background-color: #1a1a2e;
-        border-bottom: 2px solid #00d4aa;
-        height: 56px;
-        z-index: 1050;
-      }
-      .navbar-brand {
-        color: #00d4aa !important;
-        font-weight: bold;
-        font-size: 1.4rem;
-      }
-      .nav-link {
-        color: #aaa !important;
-      }
-      .nav-link:hover {
-        color: #00d4aa !important;
-      }
+        /* NAVBAR */
+        .navbar-custom {
+            background-color: #0a1628;
+            border-bottom: 1px solid #0082e6;
+            height: 56px;
+            z-index: 1050;
+        }
+        .navbar-brand { color: #0082e6 !important; font-weight: bold; font-size: 1.4rem; }
+        .nav-link { color: #8899aa !important; }
+        .nav-link:hover { color: #0082e6 !important; }
 
-      /* SIDEBAR */
-      .sidebar {
-        position: fixed;
-        top: 56px;
-        left: 0;
-        height: calc(100vh - 56px);
-        width: 70px;
-        background-color: #1a1a1a;
-        transition: width 0.3s ease;
-        overflow-x: hidden;
-        overflow-y: auto;
-        z-index: 1040;
-        border-right: 1px solid #222;
-      }
-      .sidebar::-webkit-scrollbar {
-        width: 4px;
-      }
-      .sidebar::-webkit-scrollbar-thumb {
-        background: #333;
-        border-radius: 4px;
-      }
-      .sidebar.expanded {
-        width: 240px;
-      }
-      .sidebar.expanded .sidebar-text {
-        display: inline;
-      }
-      .sidebar.expanded .sidebar-section-title {
-        display: block;
-      }
-      .sidebar-text {
-        display: none;
-        white-space: nowrap;
-      }
-      .sidebar-section-title {
-        display: none;
-        color: #00d4aa;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.7rem;
-        letter-spacing: 1px;
-        padding: 16px 16px 8px;
-      }
-
-      .sidebar-item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 10px 16px;
-        color: #ccc;
-        text-decoration: none;
-        transition: background 0.2s;
-        border-radius: 0;
-      }
-      .sidebar-item:hover {
-        background-color: #252525;
-        color: #00d4aa;
-      }
-      .sidebar-item img {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        object-fit: cover;
-        flex-shrink: 0;
-      }
-      .sidebar-item .icon-placeholder {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background: #333;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        font-size: 1rem;
-      }
-
-      .sidebar-toggle {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 16px;
-        color: #ccc;
-        cursor: pointer;
-        border-bottom: 1px solid #222;
-        text-decoration: none;
-      }
-      .sidebar-toggle:hover {
-        color: #00d4aa;
-        background: #252525;
-      }
-      .sidebar-toggle i {
-        font-size: 1.3rem;
-        flex-shrink: 0;
-        width: 32px;
-        text-align: center;
-      }
-
-      /* MAIN CONTENT */
-      .main-content {
-        margin-left: 70px;
-        margin-top: 56px;
-        padding: 20px;
-        transition: margin-left 0.3s ease;
-      }
-      .main-content.shifted {
-        margin-left: 240px;
-      }
-
-      /* CARDS */
-      .card-video {
-        background-color: #1a1a1a;
-        border: none;
-        border-radius: 12px;
-        overflow: hidden;
-        transition:
-          transform 0.2s,
-          box-shadow 0.2s;
-      }
-      .card-video:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 25px rgba(0, 212, 170, 0.15);
-      }
-      .card-video img {
-        width: 100%;
-        aspect-ratio: 16/9;
-        object-fit: cover;
-      }
-      .card-video .card-body {
-        padding: 12px;
-      }
-      .card-video .card-title {
-        font-size: 0.95rem;
-        color: #f1f1f1;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-      }
-      .card-video .card-text {
-        font-size: 0.8rem;
-        color: #888;
-      }
-      .badge-liga {
-        background-color: #00d4aa;
-        color: #0f0f0f;
-        font-weight: 600;
-      }
-      .badge-canal {
-        background-color: #e94560;
-        color: white;
-      }
-      .section-title {
-        color: #f1f1f1;
-        font-weight: 600;
-        margin-bottom: 20px;
-        padding-bottom: 8px;
-        border-bottom: 2px solid #00d4aa;
-        display: inline-block;
-      }
-      a {
-        text-decoration: none;
-        color: inherit;
-      }
-      .destacado-badge {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        background: #e94560;
-        color: white;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 0.7rem;
-        font-weight: 600;
-      }
-
-      /* MOBILE */
-      @media (max-width: 768px) {
+        /* SIDEBAR */
         .sidebar {
-          width: 0;
+            position: fixed;
+            top: 56px;
+            left: 0;
+            height: calc(100vh - 56px);
+            width: 70px;
+            background-color: #0a1628;
+            transition: width 0.3s ease;
+            overflow-x: hidden;
+            overflow-y: auto;
+            z-index: 1040;
+            border-right: 1px solid #112240;
         }
-        .sidebar.expanded {
-          width: 240px;
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #112240; border-radius: 4px; }
+        .sidebar.expanded { width: 240px; }
+        .sidebar.expanded .sidebar-text { display: inline; }
+        .sidebar.expanded .sidebar-section-title { display: block; }
+        .sidebar-text { display: none; white-space: nowrap; font-size: 0.9rem; }
+        .sidebar-section-title {
+            display: none;
+            color: #0082e6;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            padding: 16px 16px 8px;
         }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            color: #8899aa;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .sidebar-item:hover {
+            background-color: #112240;
+            color: #ffffff;
+        }
+        .sidebar-item img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .sidebar-item .icon-placeholder {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #112240;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1rem;
+            color: #0082e6;
+        }
+
+        /* MAIN CONTENT */
         .main-content {
-          margin-left: 0;
+            margin-left: 70px;
+            margin-top: 56px;
+            padding: 20px;
+            transition: margin-left 0.3s ease;
         }
-        .main-content.shifted {
-          margin-left: 0;
+        .main-content.shifted { margin-left: 240px; }
+
+        /* CARDS */
+        .card-video {
+            background-color: #0d1b2a;
+            border: 1px solid #112240;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
         }
-        .mobile-overlay {
-          position: fixed;
-          top: 56px;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.6);
-          z-index: 1035;
-          display: none;
+        .card-video:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 130, 230, 0.12);
+            border-color: #0082e6;
         }
-        .mobile-overlay.active {
-          display: block;
+        .card-video img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+        .card-video .card-body { padding: 12px; }
+        .card-video .card-title {
+            font-size: 0.95rem;
+            color: #e8e8e8;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
-      }
+        .card-video .card-text { font-size: 0.8rem; color: #5a7a9a; }
+
+        .badge-liga {
+            background-color: #0082e6;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.7rem;
+        }
+        .badge-canal {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 0.7rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .section-title {
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #0082e6;
+            display: inline-block;
+        }
+        a { text-decoration: none; color: inherit; }
+
+        .destacado-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #0082e6;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        /* SCROLLBAR GLOBAL */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #070e16; }
+        ::-webkit-scrollbar-thumb { background: #112240; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0082e6; }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .sidebar { width: 0; }
+            .sidebar.expanded { width: 240px; }
+            .main-content { margin-left: 0; }
+            .main-content.shifted { margin-left: 0; }
+            .mobile-overlay {
+                position: fixed;
+                top: 56px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.7);
+                z-index: 1035;
+                display: none;
+            }
+            .mobile-overlay.active { display: block; }
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
+
     <!-- NAVBAR -->
     <nav class="navbar navbar-custom fixed-top px-3">
-      <div class="d-flex align-items-center gap-3">
-        <i
-          class="bi bi-list"
-          style="font-size: 1.5rem; cursor: pointer; color: #ccc"
-          onclick="toggleSidebar()"
-        ></i>
-        <a class="navbar-brand mb-0" href="{% url 'canales:home' %}">
-          <i class="bi bi-trophy-fill"></i> FutbolTube
-        </a>
-      </div>
-      <div>
-        <a href="{% url 'canales:home' %}" class="nav-link d-inline">
-          <i class="bi bi-house-fill"></i>
-          <span class="d-none d-md-inline">Inicio</span>
-        </a>
-      </div>
+        <div class="d-flex align-items-center gap-3">
+            <i class="bi bi-list" style="font-size: 1.5rem; cursor: pointer; color: #8899aa;" onclick="toggleSidebar()"></i>
+            <a class="navbar-brand mb-0" href="{% url 'canales:home' %}">
+                <i class="bi bi-trophy-fill"></i> FutbolTube
+            </a>
+        </div>
+        <div>
+            <a href="{% url 'canales:home' %}" class="nav-link d-inline">
+                <i class="bi bi-house-fill"></i> <span class="d-none d-md-inline">Inicio</span>
+            </a>
+        </div>
     </nav>
 
     <!-- MOBILE OVERLAY -->
-    <div
-      class="mobile-overlay"
-      id="mobileOverlay"
-      onclick="toggleSidebar()"
-    ></div>
+    <div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
 
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
-      <div class="sidebar-section-title">
-        <i class="bi bi-broadcast"></i> Canales
-      </div>
-      {% for canal in canales_sidebar %}
-      <a href="{% url 'canales:canal' canal.slug %}" class="sidebar-item">
-        {% if canal.logo %}
-        <img src="{{ canal.logo.url }}" alt="{{ canal.nombre }}" />
-        {% else %}
-        <span class="icon-placeholder"><i class="bi bi-tv"></i></span>
-        {% endif %}
-        <span class="sidebar-text">{{ canal.nombre }}</span>
-      </a>
-      {% endfor %}
+        <div class="sidebar-section-title"><i class="bi bi-broadcast"></i> Canales</div>
+        {% for canal in canales_sidebar %}
+        <a href="{% url 'canales:canal' canal.slug %}" class="sidebar-item">
+            {% if canal.logo %}
+            <img src="{{ canal.logo.url }}" alt="{{ canal.nombre }}">
+            {% else %}
+            <span class="icon-placeholder"><i class="bi bi-tv"></i></span>
+            {% endif %}
+            <span class="sidebar-text">{{ canal.nombre }}</span>
+        </a>
+        {% endfor %}
 
-      <div class="sidebar-section-title">
-        <i class="bi bi-trophy"></i> Ligas
-      </div>
-      {% for liga in ligas_sidebar %}
-      <a href="{% url 'canales:liga' liga.slug %}" class="sidebar-item">
-        {% if liga.logo %}
-        <img src="{{ liga.logo.url }}" alt="{{ liga.nombre }}" />
-        {% else %}
-        <span class="icon-placeholder"><i class="bi bi-shield-fill"></i></span>
-        {% endif %}
-        <span class="sidebar-text">{{ liga.nombre }}</span>
-      </a>
-      {% endfor %}
+        <div class="sidebar-section-title"><i class="bi bi-trophy"></i> Ligas</div>
+        {% for liga in ligas_sidebar %}
+        <a href="{% url 'canales:liga' liga.slug %}" class="sidebar-item">
+            {% if liga.logo %}
+            <img src="{{ liga.logo.url }}" alt="{{ liga.nombre }}">
+            {% else %}
+            <span class="icon-placeholder"><i class="bi bi-shield-fill"></i></span>
+            {% endif %}
+            <span class="sidebar-text">{{ liga.nombre }}</span>
+        </a>
+        {% endfor %}
     </aside>
 
     <!-- MAIN CONTENT -->
     <main class="main-content" id="mainContent">
-      {% block contenido %}{% endblock %}
+        {% block contenido %}{% endblock %}
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      let sidebarOpen = false;
+        let sidebarOpen = false;
 
-      function toggleSidebar() {
-        sidebarOpen = !sidebarOpen;
-        document
-          .getElementById("sidebar")
-          .classList.toggle("expanded", sidebarOpen);
-        document
-          .getElementById("mainContent")
-          .classList.toggle("shifted", sidebarOpen);
-        document
-          .getElementById("mobileOverlay")
-          .classList.toggle("active", sidebarOpen);
-      }
+        function toggleSidebar() {
+            sidebarOpen = !sidebarOpen;
+            document.getElementById('sidebar').classList.toggle('expanded', sidebarOpen);
+            document.getElementById('mainContent').classList.toggle('shifted', sidebarOpen);
+            document.getElementById('mobileOverlay').classList.toggle('active', sidebarOpen);
+        }
 
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/static/sw.js").then(function (reg) {
-          console.log("SW registrado");
-        });
-      }
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/static/sw.js')
+                .then(function(reg) { console.log('SW registrado'); });
+        }
     </script>
-  </body>
+</body>
 </html>
