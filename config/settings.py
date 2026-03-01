@@ -122,10 +122,10 @@ mimetypes.add_type("image/svg+xml", ".svg", True)
 
 # Cloudinary (para Render u otros servidores sin disco permanente)
 # En PythonAnywhere usamos archivos locales
-if not os.environ.get('PYTHONANYWHERE'):
-    CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'tu-cloud-name'),
-        'API_KEY': os.environ.get('CLOUDINARY_API_KEY', 'tu-api-key'),
-        'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', 'tu-api-secret'),
-    }
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
