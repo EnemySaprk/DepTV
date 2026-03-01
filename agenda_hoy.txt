@@ -1,0 +1,7 @@
+28-02-2026 (15:00) Serie A : Como - Lecce  (CH137it) (CH70es) (CH89es) (CH97es) (CH145pt)
+28-02-2026 (16:00) Premier League : Liverpool - West Ham  (CH14fr) (CH131us) (CH56es) (CH72es) (CH87es)
+28-02-2026 (16:15) Laliga : Barcelona - Villarreal  (CH49es) (CH71es) (CH94es) (CH124de)
+28-02-2026 (18:30) Bundesliga : Borussia Dortmund - Bayern Munchen  (CH5fr) (CH87es) (CH111de)
+28-02-2026 (21:00) LaLiga : Real Oviedo - Atletico Madrid  (CH49es) (CH71es) (CH87es)
+28-02-2026 (00:00) Liga MX : Toluca - Guadalajara  (CH68us) (CH108mx)
+28-02-2026 (22:10) Liga BetPlay : Alianza - America de Cali  (CH81co) (CH82co)
