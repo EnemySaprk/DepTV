@@ -1,4 +1,7 @@
 ﻿from django.db import models
+from cloudinary.models import CloudinaryField
+
+thumbnail = CloudinaryField('image')
 
 
 class ConfigStreaming(models.Model):
