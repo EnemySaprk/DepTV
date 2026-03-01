@@ -1,11 +1,13 @@
-from django.urls import path
-from . import views
-
-app_name = 'canales'
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('video/<int:pk>/', views.detalle_video, name='detalle_video'),
-    path('canal/<slug:slug>/', views.lista_canal, name='canal'),
-    path('liga/<slug:slug>/', views.lista_liga, name='liga'),
+    path('admin/', admin.site.urls),
+    path('', include('canales.urls')),
 ]
+
+# IMPORTANTE para que funcionen las imágenes en modo Free
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,5 +1,4 @@
 ﻿from django.db import models
-from cloudinary.models import CloudinaryField
 
 
 class ConfigStreaming(models.Model):
@@ -19,7 +18,7 @@ class ConfigStreaming(models.Model):
 class Liga(models.Model):
     nombre = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
-    logo = CloudinaryField('image', blank=True, null=True)
+    logo = models.ImageField(upload_to='ligas/', blank=True, null=True)
     pais = models.CharField(max_length=50, blank=True)
     activa = models.BooleanField(default=True)
 
@@ -61,7 +60,7 @@ class CanalBolaloca(models.Model):
 class Canal(models.Model):
     nombre = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
-    logo = CloudinaryField('image', blank=True, null=True)
+    logo = models.ImageField(upload_to='canales/', blank=True, null=True)
     url_sitio = models.URLField(blank=True)
     descripcion = models.TextField(blank=True)
     activo = models.BooleanField(default=True)
@@ -89,7 +88,7 @@ class Video(models.Model):
     canal = models.ForeignKey(Canal, on_delete=models.CASCADE, related_name='videos')
     ligas = models.ManyToManyField(Liga, blank=True, related_name='videos')
     descripcion = models.TextField(blank=True)
-    thumbnail_custom = CloudinaryField('image', blank=True, null=True)
+    thumbnail_custom = models.ImageField(upload_to='thumbnails/', blank=True, null=True)
     fecha_publicacion = models.DateTimeField(auto_now_add=True)
     destacado = models.BooleanField(default=False)
     activo = models.BooleanField(default=True)
