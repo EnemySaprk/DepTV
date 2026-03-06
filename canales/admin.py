@@ -1,5 +1,5 @@
 ﻿from django.contrib import admin
-from .models import Liga, Canal, Video, EnlaceVideo, CanalBolaloca, EventoBolaloca, ConfigStreaming
+from .models import Liga, Canal, Video, EnlaceVideo, CanalBolaloca, EventoBolaloca, ConfigStreaming, BannerImagen
 
 
 class EnlaceVideoInline(admin.TabularInline):
@@ -82,3 +82,9 @@ class EventoBolalocaAdmin(admin.ModelAdmin):
 class ConfigStreamingAdmin(admin.ModelAdmin):
     list_display = ['nombre', 'dominio', 'ruta', 'activo']
     list_editable = ['dominio', 'ruta', 'activo']
+
+@admin.register(BannerImagen)
+class BannerImagenAdmin(admin.ModelAdmin):
+    list_display = ['titulo', 'canal', 'liga', 'orden', 'activo']
+    list_filter = ['canal', 'liga', 'activo']
+    list_editable = ['orden', 'activo']

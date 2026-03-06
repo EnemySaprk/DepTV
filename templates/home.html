@@ -2,68 +2,163 @@
 
 {% block contenido %}
 
-{% if destacados %}
-<section class="mb-5">
-    <h5 class="section-title"><i class="bi bi-star-fill"></i> Destacados</h5>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-        {% for video in destacados %}
-        <div class="col">
-            <a href="{% url 'canales:detalle_video' video.pk %}">
-                <div class="card card-video position-relative">
-                    {% if video.destacado %}
-                    <span class="destacado-badge"><i class="bi bi-star-fill"></i> Destacado</span>
-                    {% endif %}
-                    {% if video.thumbnail_url %}
-                    <img src="{{ video.thumbnail_url }}" alt="{{ video.titulo }}">
-                    {% endif %}
-                    <div class="card-body">
-                        <h6 class="card-title">{{ video.titulo }}</h6>
-                        <p class="card-text mb-1">
-                            <span class="badge badge-canal">{{ video.canal.nombre }}</span>
-                            {% for liga in video.ligas.all %}
-                            <span class="badge badge-liga">{{ liga.nombre }}</span>
-                            {% endfor %}
-                        </p>
-                        <p class="card-text">{{ video.fecha_publicacion|timesince }}</p>
-                    </div>
-                </div>
-            </a>
-        </div>
-        {% endfor %}
-    </div>
-</section>
-{% endif %}
-
-<section class="mb-5">
-    <h5 class="section-title"><i class="bi bi-clock-fill"></i> Ultimos Videos</h5>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
-        {% for video in ultimos %}
-        <div class="col">
-            <a href="{% url 'canales:detalle_video' video.pk %}">
-                <div class="card card-video position-relative">
-                    {% if video.destacado %}
-                    <span class="destacado-badge"><i class="bi bi-star-fill"></i> Destacado</span>
-                    {% endif %}
-                    {% if video.thumbnail_url %}
-                    <img src="{{ video.thumbnail_url }}" alt="{{ video.titulo }}">
-                    {% endif %}
-                    <div class="card-body">
-                        <h6 class="card-title">{{ video.titulo }}</h6>
-                        <p class="card-text mb-1">
-                            <span class="badge badge-canal">{{ video.canal.nombre }}</span>
-                            {% for liga in video.ligas.all %}
-                            <span class="badge badge-liga">{{ liga.nombre }}</span>
-                            {% endfor %}
-                        </p>
-                        <p class="card-text">{{ video.fecha_publicacion|timesince }}</p>
-                    </div>
-                </div>
-            </a>
+<!-- HERO SLIDER -->
+<section class="hero-slider" id="heroSliderSection">
+    <div class="slider-track" id="heroSlider">
+        {% for banner in banners %}
+        <div class="slide {% if forloop.first %}active{% endif %}">
+            <img src="{{ banner.imagen.url }}" alt="{{ banner.titulo }}">
+            <div class="slide-gradient"></div>
+            <div class="slide-content">
+                {% if banner.titulo %}
+                <h2 class="slide-title">{{ banner.titulo }}</h2>
+                {% endif %}
+                {% if banner.descripcion %}
+                <p class="slide-desc">{{ banner.descripcion }}</p>
+                {% endif %}
+            </div>
         </div>
         {% empty %}
-        <p class="text-muted">No hay videos disponibles todavia.</p>
+        <div class="slide active">
+            <div class="slide-fallback">
+                <h1 class="hero-title">EN VIVO</h1>
+                <p class="hero-subtitle">Todos los canales deportivos en un solo lugar</p>
+            </div>
+        </div>
         {% endfor %}
     </div>
+    {% if banners|length > 1 %}
+    <button class="slider-arrow slider-arrow-left" id="heroArrowLeft"><i class="bi bi-chevron-left"></i></button>
+    <button class="slider-arrow slider-arrow-right" id="heroArrowRight"><i class="bi bi-chevron-right"></i></button>
+    <div class="slider-dots" id="heroDots"></div>
+    {% endif %}
 </section>
 
+<!-- CANALES -->
+{% for item in canales_con_videos %}
+<section class="channel-section mb-4">
+    <div class="channel-header">
+        <a href="{% url 'canales:canal' item.canal.slug %}" class="channel-header-link">
+            {% if item.canal.logo %}
+            <img src="{{ item.canal.logo.url }}" alt="{{ item.canal.nombre }}" class="channel-logo">
+            {% else %}
+            <span class="channel-icon"><i class="bi bi-tv-fill"></i></span>
+            {% endif %}
+            <h5 class="channel-name">{{ item.canal.nombre }}</h5>
+            <i class="bi bi-chevron-right channel-arrow"></i>
+        </a>
+    </div>
+    <div class="carousel-wrapper">
+        <button class="carousel-btn carousel-btn-left" onclick="scrollCarousel(this, -1)"><i class="bi bi-chevron-left"></i></button>
+        <div class="carousel-track">
+            {% for video in item.videos %}
+            <a href="{% url 'canales:detalle_video' video.pk %}" class="carousel-card">
+                <div class="card-thumb">
+                    {% if video.thumbnail_url %}
+                    <img src="{{ video.thumbnail_url }}" alt="{{ video.titulo }}">
+                    {% else %}
+                    <div class="thumb-placeholder"><i class="bi bi-play-btn-fill"></i></div>
+                    {% endif %}
+                    <div class="card-overlay"><i class="bi bi-play-circle-fill play-icon"></i></div>
+                    {% if video.destacado %}
+                    <span class="live-badge"><i class="bi bi-broadcast"></i> EN VIVO</span>
+                    {% endif %}
+                </div>
+                <div class="card-info"><p class="card-title-text">{{ video.titulo }}</p></div>
+            </a>
+            {% endfor %}
+        </div>
+        <button class="carousel-btn carousel-btn-right" onclick="scrollCarousel(this, 1)"><i class="bi bi-chevron-right"></i></button>
+    </div>
+</section>
+{% endfor %}
+
+<!-- LIGAS -->
+{% for item in ligas_con_videos %}
+<section class="channel-section mb-4">
+    <div class="channel-header">
+        <a href="{% url 'canales:liga' item.liga.slug %}" class="channel-header-link">
+            {% if item.liga.logo %}
+            <img src="{{ item.liga.logo.url }}" alt="{{ item.liga.nombre }}" class="channel-logo">
+            {% else %}
+            <span class="channel-icon"><i class="bi bi-trophy-fill"></i></span>
+            {% endif %}
+            <h5 class="channel-name">{{ item.liga.nombre }}</h5>
+            <i class="bi bi-chevron-right channel-arrow"></i>
+        </a>
+    </div>
+    <div class="carousel-wrapper">
+        <button class="carousel-btn carousel-btn-left" onclick="scrollCarousel(this, -1)"><i class="bi bi-chevron-left"></i></button>
+        <div class="carousel-track">
+            {% for video in item.videos %}
+            <a href="{% url 'canales:detalle_video' video.pk %}" class="carousel-card">
+                <div class="card-thumb">
+                    {% if video.thumbnail_url %}
+                    <img src="{{ video.thumbnail_url }}" alt="{{ video.titulo }}">
+                    {% else %}
+                    <div class="thumb-placeholder"><i class="bi bi-play-btn-fill"></i></div>
+                    {% endif %}
+                    <div class="card-overlay"><i class="bi bi-play-circle-fill play-icon"></i></div>
+                </div>
+                <div class="card-info">
+                    <p class="card-title-text">{{ video.titulo }}</p>
+                    <span class="card-channel">{{ video.canal.nombre }}</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        <button class="carousel-btn carousel-btn-right" onclick="scrollCarousel(this, 1)"><i class="bi bi-chevron-right"></i></button>
+    </div>
+</section>
+{% endfor %}
+
+<script>
+function scrollCarousel(btn, direction) {
+    var track = btn.parentElement.querySelector('.carousel-track');
+    track.scrollBy({ left: track.clientWidth * 0.75 * direction, behavior: 'smooth' });
+}
+
+(function() {
+    var slides = document.querySelectorAll('#heroSlider .slide');
+    var dotsContainer = document.getElementById('heroDots');
+    var leftBtn = document.getElementById('heroArrowLeft');
+    var rightBtn = document.getElementById('heroArrowRight');
+    if (!slides.length || slides.length < 2) return;
+
+    var current = 0;
+    var total = slides.length;
+    var timer;
+    var dots = [];
+
+    for (var i = 0; i < total; i++) {
+        var dot = document.createElement('span');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('data-index', i);
+        dot.addEventListener('click', function() {
+            goTo(parseInt(this.getAttribute('data-index')));
+        });
+        dotsContainer.appendChild(dot);
+        dots.push(dot);
+    }
+
+    function goTo(index) {
+        slides[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        current = ((index % total) + total) % total;
+        slides[current].classList.add('active');
+        dots[current].classList.add('active');
+        resetTimer();
+    }
+
+    function resetTimer() {
+        clearInterval(timer);
+        timer = setInterval(function() { goTo(current + 1); }, 6000);
+    }
+
+    leftBtn.addEventListener('click', function() { goTo(current - 1); });
+    rightBtn.addEventListener('click', function() { goTo(current + 1); });
+
+    resetTimer();
+})();
+</script>
 {% endblock %}

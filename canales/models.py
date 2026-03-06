@@ -170,8 +170,67 @@ class EnlaceVideo(models.Model):
         if self.tipo == 'youtube' and self.youtube_id:
             return f'https://www.youtube.com/embed/{self.youtube_id}'
         return self.url
+    
 
+class BannerImagen(models.Model):
+    titulo = models.CharField(max_length=200, blank=True)
+    descripcion = models.TextField(blank=True, help_text='Descripcion corta del banner')
+    imagen = models.FileField(upload_to='banners/')
+    canal = models.ForeignKey(Canal, on_delete=models.CASCADE, null=True, blank=True, related_name='banners')
+    liga = models.ForeignKey(Liga, on_delete=models.SET_NULL, null=True, blank=True, related_name='banners')
+    orden = models.PositiveIntegerField(default=0)
+    activo = models.BooleanField(default=True)
 
+    BANNER_WIDTH = 1920
+    BANNER_HEIGHT = 600
+
+    class Meta:
+        ordering = ['orden']
+        verbose_name = 'Banner'
+        verbose_name_plural = 'Banners'
+
+    def __str__(self):
+        return self.titulo or f'Banner {self.pk}'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.imagen:
+            self.redimensionar_imagen()
+
+    def redimensionar_imagen(self):
+        from PIL import Image
+        import os
+
+        try:
+            img_path = self.imagen.path
+            img = Image.open(img_path)
+
+            if img.mode in ('RGBA', 'P'):
+                img = img.convert('RGB')
+
+            img_width, img_height = img.size
+            target_w = self.BANNER_WIDTH
+            target_h = self.BANNER_HEIGHT
+            target_ratio = target_w / target_h
+
+            img_ratio = img_width / img_height
+
+            if img_ratio > target_ratio:
+                new_height = img_height
+                new_width = int(img_height * target_ratio)
+                left = (img_width - new_width) // 2
+                img = img.crop((left, 0, left + new_width, new_height))
+            else:
+                new_width = img_width
+                new_height = int(img_width / target_ratio)
+                top = (img_height - new_height) // 2
+                img = img.crop((0, top, new_width, top + new_height))
+
+            img = img.resize((target_w, target_h), Image.LANCZOS)
+            img.save(img_path, 'JPEG', quality=90)
+        except Exception as e:
+            print(f'Error redimensionando banner: {e}')
+            
 class EventoBolaloca(models.Model):
     fecha = models.DateField()
     hora = models.TimeField()

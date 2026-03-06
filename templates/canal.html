@@ -1,43 +1,112 @@
 ﻿{% extends 'base.html' %}
 
-{% block titulo %}
-{{ canal.nombre }} - FutbolTube
-{% endblock %}
+{% block titulo %}{{ canal.nombre }} - FutbolTube{% endblock %}
 
 {% block contenido %}
-<div class="d-flex align-items-center gap-3 mb-4">
-    {% if canal.logo %}
-    <img src="{{ canal.logo.url }}"
-         alt="{{ canal.nombre }}"
-         style="width:60px;height:60px;border-radius:50%;object-fit:cover;">
-    {% endif %}
-    <div>
-        <h4 class="mb-0">{{ canal.nombre }}</h4>
-        {% if canal.url_sitio %}
-        <a href="{{ canal.url_sitio }}" target="_blank" class="text-muted">
-            Sitio oficial
-        </a>
-        {% endif %}
+{% if banners %}
+<section class="hero-slider hero-slider-page" id="pageSliderSection">
+    <div class="slider-track" id="pageSlider">
+        {% for banner in banners %}
+        <div class="slide {% if forloop.first %}active{% endif %}">
+            <img src="{{ banner.imagen.url }}" alt="{{ banner.titulo }}">
+            <div class="slide-gradient"></div>
+            <div class="slide-content">
+                {% if canal.logo %}
+                <img src="{{ canal.logo.url }}" class="slide-logo" alt="{{ canal.nombre }}">
+                {% endif %}
+                <h2 class="slide-title">{{ banner.titulo|default:canal.nombre }}</h2>
+                {% if banner.descripcion %}
+                <p class="slide-desc">{{ banner.descripcion }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
     </div>
+    {% if banners|length > 1 %}
+    <button class="slider-arrow slider-arrow-left" id="pageArrowLeft"><i class="bi bi-chevron-left"></i></button>
+    <button class="slider-arrow slider-arrow-right" id="pageArrowRight"><i class="bi bi-chevron-right"></i></button>
+    <div class="slider-dots" id="pageDots"></div>
+    {% endif %}
+</section>
+{% else %}
+<div class="channel-banner">
+    <div class="channel-banner-content">
+        {% if canal.logo %}
+        <img src="{{ canal.logo.url }}" alt="{{ canal.nombre }}" class="banner-logo">
+        {% else %}
+        <div class="banner-logo-placeholder"><i class="bi bi-tv-fill"></i></div>
+        {% endif %}
+        <div>
+            <h2 class="banner-title">{{ canal.nombre }}</h2>
+            {% if canal.descripcion %}<p class="banner-desc">{{ canal.descripcion }}</p>{% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="video-grid">
+    {% for video in videos %}
+    <a href="{% url 'canales:detalle_video' video.pk %}" class="carousel-card">
+        <div class="card-thumb">
+            {% if video.thumbnail_url %}
+            <img src="{{ video.thumbnail_url }}" alt="{{ video.titulo }}">
+            {% else %}
+            <div class="thumb-placeholder"><i class="bi bi-play-btn-fill"></i></div>
+            {% endif %}
+            <div class="card-overlay"><i class="bi bi-play-circle-fill play-icon"></i></div>
+            {% if video.destacado %}
+            <span class="live-badge"><i class="bi bi-broadcast"></i> EN VIVO</span>
+            {% endif %}
+        </div>
+        <div class="card-info"><p class="card-title-text">{{ video.titulo }}</p></div>
+    </a>
+    {% empty %}
+    <p class="text-muted">Este canal no tiene videos todavia.</p>
+    {% endfor %}
 </div>
 
-<div class="row g-3">
-{% for video in videos %}
-    <div class="col">
-        <a href="{% url 'canales:detalle_video' video.pk %}">
-            <div class="card card-video">
-                {% if video.thumbnail_url %}
-                <img src="{{ video.thumbnail_url }}" alt="{{ video.titulo }}">
-                {% endif %}
-                <div class="card-body">
-                    <h6 class="card-title">{{ video.titulo }}</h6>
-                    <p class="card-text">{{ video.fecha_publicacion|timesince }}</p>
-                </div>
-            </div>
-        </a>
-    </div>
-{% empty %}
-    <p class="text-muted">Este canal no tiene videos todavía.</p>
-{% endfor %}
-</div>
+<script>
+(function() {
+    var slides = document.querySelectorAll('#pageSlider .slide');
+    var dotsContainer = document.getElementById('pageDots');
+    var leftBtn = document.getElementById('pageArrowLeft');
+    var rightBtn = document.getElementById('pageArrowRight');
+    if (!slides.length || slides.length < 2) return;
+
+    var current = 0;
+    var total = slides.length;
+    var timer;
+    var dots = [];
+
+    for (var i = 0; i < total; i++) {
+        var dot = document.createElement('span');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('data-index', i);
+        dot.addEventListener('click', function() {
+            goTo(parseInt(this.getAttribute('data-index')));
+        });
+        dotsContainer.appendChild(dot);
+        dots.push(dot);
+    }
+
+    function goTo(index) {
+        slides[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        current = ((index % total) + total) % total;
+        slides[current].classList.add('active');
+        dots[current].classList.add('active');
+        resetTimer();
+    }
+
+    function resetTimer() {
+        clearInterval(timer);
+        timer = setInterval(function() { goTo(current + 1); }, 6000);
+    }
+
+    leftBtn.addEventListener('click', function() { goTo(current - 1); });
+    rightBtn.addEventListener('click', function() { goTo(current + 1); });
+
+    resetTimer();
+})();
+</script>
 {% endblock %}
