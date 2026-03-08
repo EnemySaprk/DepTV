@@ -103,10 +103,6 @@ class Video(models.Model):
     def __str__(self):
         return self.titulo
 
-    def save(self, *args, **kwargs):
-        if self.tipo == 'youtube' and self.url_video and not self.youtube_id:
-            self.youtube_id = self.extraer_youtube_id(self.url_video)
-        super().save(*args, **kwargs)
 
     @staticmethod
     def extraer_youtube_id(url):
@@ -182,7 +178,7 @@ class BannerImagen(models.Model):
     activo = models.BooleanField(default=True)
 
     BANNER_WIDTH = 1920
-    BANNER_HEIGHT = 600
+    BANNER_HEIGHT = 1080
 
     class Meta:
         ordering = ['orden']
