@@ -1,0 +1,135 @@
+﻿{% extends 'base.html' %}
+
+{% block titulo %}Agenda - FutbolTube{% endblock %}
+
+{% block contenido %}
+<div style="padding: 20px 24px;">
+
+    <h4 style="font-weight: 800; margin-bottom: 20px;">
+        <i class="bi bi-calendar-event"></i> Agenda de Partidos
+    </h4>
+
+    <!-- SELECTOR DE DIAS -->
+    <div class="agenda-days">
+        {% for dia in dias %}
+        <a href="?fecha={{ dia.fecha|date:'Y-m-d' }}"
+           class="agenda-day {% if dia.es_seleccionado %}active{% endif %}">
+            <span class="agenda-day-name">
+                {% if dia.es_hoy %}HOY{% else %}{{ dia.fecha|date:'D' }}{% endif %}
+            </span>
+            <span class="agenda-day-num">{{ dia.fecha|date:'d' }}</span>
+            <span class="agenda-day-month">{{ dia.fecha|date:'M' }}</span>
+        </a>
+        {% endfor %}
+    </div>
+
+    {% if total_partidos == 0 %}
+    <div style="text-align: center; padding: 60px 0; color: #5a7a9a;">
+        <i class="bi bi-calendar-x" style="font-size: 3rem; display: block; margin-bottom: 16px;"></i>
+        <p>No hay partidos programados para este dia.</p>
+    </div>
+    {% endif %}
+
+    <!-- PARTIDOS AGRUPADOS POR LIGA -->
+    {% for liga_nombre, liga_data in ligas_partidos.items %}
+    <div class="agenda-liga">
+        <div class="agenda-liga-header">
+            {% if liga_data.logo %}
+            <img src="{{ liga_data.logo }}" alt="{{ liga_nombre }}" class="agenda-liga-logo">
+            {% endif %}
+            <h5 class="agenda-liga-nombre">{{ liga_nombre }}</h5>
+        </div>
+
+        {% for partido in liga_data.partidos %}
+        <div class="agenda-partido" onclick="toggleCanales(this)">
+            <div class="agenda-hora">
+                {% if partido.estado == 'NS' %}
+                    {{ partido.hora|time:'H:i' }}
+                {% elif partido.estado == 'FT' or partido.estado == 'AET' or partido.estado == 'PEN' %}
+                    <span class="agenda-finalizado">FIN</span>
+                {% else %}
+                    <span class="agenda-envivo"><i class="bi bi-broadcast"></i> VIVO</span>
+                {% endif %}
+            </div>
+
+            <div class="agenda-equipos">
+                <div class="agenda-equipo">
+                    {% if partido.equipo_local_logo %}
+                    <img src="{{ partido.equipo_local_logo }}" alt="{{ partido.equipo_local }}" class="agenda-equipo-logo">
+                    {% endif %}
+                    <span>{{ partido.equipo_local }}</span>
+                    {% if partido.goles_local != None %}
+                    <strong class="agenda-gol">{{ partido.goles_local }}</strong>
+                    {% endif %}
+                </div>
+                <div class="agenda-equipo">
+                    {% if partido.equipo_visitante_logo %}
+                    <img src="{{ partido.equipo_visitante_logo }}" alt="{{ partido.equipo_visitante }}" class="agenda-equipo-logo">
+                    {% endif %}
+                    <span>{{ partido.equipo_visitante }}</span>
+                    {% if partido.goles_visitante != None %}
+                    <strong class="agenda-gol">{{ partido.goles_visitante }}</strong>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="agenda-ver">
+                {% if partido.canales_transmision %}
+                <span class="agenda-ver-btn"><i class="bi bi-play-circle-fill"></i> Ver</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- PANEL DE CANALES (oculto) -->
+        {% if partido.canales_transmision %}
+        <div class="agenda-canales-panel" style="display: none;">
+            <div class="agenda-canales-titulo">
+                <i class="bi bi-tv"></i> Canales disponibles para {{ partido.equipo_local }} vs {{ partido.equipo_visitante }}
+            </div>
+            <div class="agenda-canales-grid">
+                {% for video in partido.canales_transmision %}
+                <a href="{% url 'canales:detalle_video' video.pk %}" class="agenda-canal-card">
+                    <div class="agenda-canal-logo-wrap">
+                        {% if video.canal.logo %}
+                        <img src="{{ video.canal.logo.url }}" alt="{{ video.titulo }}">
+                        {% else %}
+                        <i class="bi bi-tv-fill"></i>
+                        {% endif %}
+                    </div>
+                    <div class="agenda-canal-info">
+                        <span class="agenda-canal-nombre">{{ video.titulo }}</span>
+                        <span class="agenda-canal-sub">{{ video.canal.nombre }}</span>
+                    </div>
+                    <i class="bi bi-chevron-right agenda-canal-arrow"></i>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endfor %}
+
+</div>
+
+<script>
+function toggleCanales(el) {
+    var panel = el.nextElementSibling;
+    if (!panel || !panel.classList.contains('agenda-canales-panel')) return;
+
+    var isOpen = panel.style.display !== 'none';
+    // Cerrar todos los paneles abiertos
+    document.querySelectorAll('.agenda-canales-panel').forEach(function(p) {
+        p.style.display = 'none';
+    });
+    document.querySelectorAll('.agenda-partido').forEach(function(p) {
+        p.classList.remove('active');
+    });
+
+    if (!isOpen) {
+        panel.style.display = 'block';
+        el.classList.add('active');
+    }
+}
+</script>
+{% endblock %}

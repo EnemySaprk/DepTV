@@ -1,6 +1,7 @@
 ﻿from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
-from .models import Liga, Canal, Video, BannerImagen
+from datetime import date, timedelta
+from .models import Liga, Canal, Video, BannerImagen, Partido
 
 
 def home(request):
@@ -81,3 +82,43 @@ def lista_liga(request, slug):
         'videos': videos,
     }
     return render(request, 'liga.html', context)
+
+def agenda(request):
+    fecha_str = request.GET.get('fecha')
+    if fecha_str:
+        try:
+            fecha_sel = date.fromisoformat(fecha_str)
+        except ValueError:
+            fecha_sel = date.today()
+    else:
+        fecha_sel = date.today()
+
+    partidos = Partido.objects.filter(fecha=fecha_sel).order_by('hora')
+
+    # Agrupar por liga
+    ligas_partidos = {}
+    for partido in partidos:
+        if partido.liga_nombre not in ligas_partidos:
+            ligas_partidos[partido.liga_nombre] = {
+                'logo': partido.liga_logo,
+                'partidos': []
+            }
+        ligas_partidos[partido.liga_nombre]['partidos'].append(partido)
+
+    # Generar días para navegación (3 días atrás, hoy, 3 días adelante)
+    dias = []
+    for i in range(-3, 4):
+        d = date.today() + timedelta(days=i)
+        dias.append({
+            'fecha': d,
+            'es_hoy': d == date.today(),
+            'es_seleccionado': d == fecha_sel,
+        })
+
+    context = {
+        'fecha_sel': fecha_sel,
+        'ligas_partidos': ligas_partidos,
+        'dias': dias,
+        'total_partidos': partidos.count(),
+    }
+    return render(request, 'agenda.html', context)

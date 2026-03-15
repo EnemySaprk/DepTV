@@ -596,6 +596,188 @@
         .btn-option { border-radius: 20px; font-size: 0.8rem; padding: 4px 14px; border: none; transition: all 0.2s; cursor: pointer; }
         .btn-option:hover { filter: brightness(1.2); }
 
+
+        /* AGENDA */
+       /* AGENDA */
+        .agenda-days {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+        .agenda-days::-webkit-scrollbar { display: none; }
+        .agenda-day {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 16px;
+            border-radius: 10px;
+            background: #0d1b2a;
+            border: 1px solid #112240;
+            color: #8899aa;
+            text-decoration: none;
+            min-width: 70px;
+            transition: all 0.2s;
+        }
+        .agenda-day:hover { border-color: #0082e6; color: #fff; }
+        .agenda-day.active { background: #0082e6; border-color: #0082e6; color: #fff; }
+        .agenda-day-name { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .agenda-day-num { font-size: 1.3rem; font-weight: 800; }
+        .agenda-day-month { font-size: 0.7rem; text-transform: uppercase; }
+
+        .agenda-liga { margin-bottom: 24px; }
+        .agenda-liga-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid #112240;
+            margin-bottom: 4px;
+        }
+        .agenda-liga-logo { width: 24px; height: 24px; object-fit: contain; }
+        .agenda-liga-nombre { margin: 0; font-size: 1rem; font-weight: 700; color: #fff; }
+
+        .agenda-partido {
+            display: flex;
+            align-items: center;
+            padding: 14px 12px;
+            border-bottom: 1px solid rgba(17,34,64,0.5);
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+        .agenda-partido:hover { background: rgba(0,130,230,0.08); }
+        .agenda-partido.active { background: rgba(0,130,230,0.12); border-left: 3px solid #0082e6; }
+
+        .agenda-hora {
+            width: 60px;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #8899aa;
+            text-align: center;
+        }
+        .agenda-envivo {
+            color: #e60000;
+            font-size: 0.75rem;
+            font-weight: 700;
+            animation: pulse-live 2s infinite;
+        }
+        .agenda-finalizado { color: #5a7a9a; font-size: 0.8rem; font-weight: 600; }
+
+        .agenda-equipos {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 0;
+        }
+        .agenda-equipo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: #e8e8e8;
+        }
+        .agenda-equipo-logo { width: 22px; height: 22px; object-fit: contain; flex-shrink: 0; }
+        .agenda-gol { color: #fff; margin-left: auto; font-size: 1rem; }
+
+        .agenda-ver {
+            width: 80px;
+            flex-shrink: 0;
+            text-align: right;
+        }
+        .agenda-ver-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(0,130,230,0.15);
+            color: #0082e6;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .agenda-partido:hover .agenda-ver-btn { background: #0082e6; color: #fff; }
+
+        /* PANEL DE CANALES */
+        .agenda-canales-panel {
+            background: #0d1b2a;
+            border: 1px solid #112240;
+            border-radius: 10px;
+            margin: 4px 0 12px 60px;
+            padding: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+        .agenda-canales-titulo {
+            font-size: 0.8rem;
+            color: #5a7a9a;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .agenda-canales-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .agenda-canal-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: rgba(0,130,230,0.06);
+            border: 1px solid rgba(0,130,230,0.15);
+            border-radius: 10px;
+            text-decoration: none;
+            color: #e8e8e8;
+            transition: all 0.2s;
+        }
+        .agenda-canal-card:hover {
+            background: rgba(0,130,230,0.15);
+            border-color: #0082e6;
+            transform: translateX(4px);
+        }
+        .agenda-canal-logo-wrap {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .agenda-canal-logo-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 4px;
+        }
+        .agenda-canal-logo-wrap i { color: #0082e6; font-size: 1.2rem; }
+        .agenda-canal-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .agenda-canal-nombre { font-size: 0.9rem; font-weight: 600; }
+        .agenda-canal-sub { font-size: 0.75rem; color: #5a7a9a; }
+        .agenda-canal-arrow { color: #5a7a9a; transition: color 0.2s; }
+        .agenda-canal-card:hover .agenda-canal-arrow { color: #0082e6; }
+
+        @media (max-width: 768px) {
+            .agenda-partido { flex-wrap: wrap; gap: 8px; }
+            .agenda-hora { width: 50px; }
+            .agenda-ver { width: 60px; }
+            .agenda-ver-btn { padding: 4px 8px; font-size: 0.75rem; }
+            .agenda-canales-panel { margin-left: 0; }
+        }
+
         /* SCROLLBAR */
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: #070e16; }
@@ -650,6 +832,9 @@
         <div>
             <a href="{% url 'canales:home' %}" class="nav-link d-inline">
                 <i class="bi bi-house-fill"></i> <span class="d-none d-md-inline">Inicio</span>
+            </a>
+            <a href="{% url 'canales:agenda' %}" class="nav-link d-inline ms-3">
+                <i class="bi bi-calendar-event"></i> <span class="d-none d-md-inline">Agenda</span>
             </a>
         </div>
     </nav>

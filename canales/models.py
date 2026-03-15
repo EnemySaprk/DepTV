@@ -226,6 +226,116 @@ class BannerImagen(models.Model):
             img.save(img_path, 'JPEG', quality=90)
         except Exception as e:
             print(f'Error redimensionando banner: {e}')
+
+class MapeoLigaCanal(models.Model):
+    """Mapeo automático: cuando un partido es de X liga, se transmite por Y canales"""
+    liga_api_id = models.PositiveIntegerField(unique=True, help_text='ID de la liga en API-Football')
+    liga_nombre = models.CharField(max_length=100, help_text='Nombre de la liga (ej: La Liga, Premier League)')
+    canales = models.ManyToManyField('Video', blank=True, help_text='Videos/canales que transmiten esta liga')
+    activo = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['liga_nombre']
+        verbose_name = 'Mapeo Liga-Canal'
+        verbose_name_plural = 'Mapeos Liga-Canal'
+
+    def __str__(self):
+        return self.liga_nombre
+
+
+class Partido(models.Model):
+    ESTADO_CHOICES = [
+        ('NS', 'No iniciado'),
+        ('1H', 'Primer tiempo'),
+        ('HT', 'Entretiempo'),
+        ('2H', 'Segundo tiempo'),
+        ('FT', 'Finalizado'),
+        ('AET', 'Tiempo extra'),
+        ('PEN', 'Penales'),
+        ('SUSP', 'Suspendido'),
+        ('PST', 'Pospuesto'),
+        ('CANC', 'Cancelado'),
+        ('LIVE', 'En vivo'),
+    ]
+
+    api_id = models.PositiveIntegerField(unique=True, help_text='ID del fixture en API-Football')
+    liga_nombre = models.CharField(max_length=100)
+    liga_logo = models.URLField(blank=True)
+    liga_api_id = models.PositiveIntegerField(default=0)
+    equipo_local = models.CharField(max_length=100)
+    equipo_local_logo = models.URLField(blank=True)
+    equipo_visitante = models.CharField(max_length=100)
+    equipo_visitante_logo = models.URLField(blank=True)
+    fecha = models.DateField()
+    hora = models.TimeField()
+    estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='NS')
+    goles_local = models.PositiveIntegerField(null=True, blank=True)
+    goles_visitante = models.PositiveIntegerField(null=True, blank=True)
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
+    canales_bolaloca = models.CharField(max_length=200, blank=True, help_text='Canales bolaloca (ej: 81,87,94)')
+
+    class Meta:
+        ordering = ['fecha', 'hora']
+        verbose_name = 'Partido'
+        verbose_name_plural = 'Partidos'
+
+    def __str__(self):
+        return f'{self.equipo_local} vs {self.equipo_visitante} ({self.liga_nombre})'
+
+    @property
+    def canales_transmision(self):
+        """Retorna los videos que transmiten este partido basado en canales bolaloca + tvtvhd"""
+        from canales.models import Video, MapeoLigaCanal
+        
+        videos_encontrados = []
+        
+        if self.canales_bolaloca:
+            numeros = [int(n.strip()) for n in self.canales_bolaloca.split(',') if n.strip().isdigit()]
+            
+            # Buscar por bolaloca_canal
+            por_bolaloca = Video.objects.filter(
+                activo=True,
+                bolaloca_canal__numero__in=numeros
+            ).select_related('canal')
+            videos_encontrados.extend(list(por_bolaloca))
+            
+            # Buscar videos sin bolaloca pero que correspondan por mapeo de canal
+            # CH56=DAZN1, CH57=DAZN2, CH58=DAZN LaLiga, CH49=DAZN F1
+            # CH44=M+LaLiga, CH46=Champions1, CH47=Champions2
+            # CH81=WinSports+, CH82=WinSports2
+            mapeo_tvtvhd = {
+                56: 'dazn1',
+                57: 'dazn2',
+                58: 'dazn_laliga',
+                49: 'daznf1',
+                51: 'dazn_laliga',
+                44: 'm_laligatv',
+                46: 'ligadecampeones1',
+                47: 'ligadecampeones2',
+                81: 'winsportsplus',
+                82: 'winsports2',
+                50: 'm_laligatv2',
+            }
+            
+            for num in numeros:
+                tvtvhd = mapeo_tvtvhd.get(num)
+                if tvtvhd:
+                    por_tvtvhd = Video.objects.filter(
+                        activo=True,
+                        tvtvhd_id=tvtvhd
+                    ).select_related('canal')
+                    for v in por_tvtvhd:
+                        if v not in videos_encontrados:
+                            videos_encontrados.append(v)
+        
+        if not videos_encontrados:
+            try:
+                mapeo = MapeoLigaCanal.objects.get(liga_api_id=self.liga_api_id, activo=True)
+                return mapeo.canales.filter(activo=True)
+            except MapeoLigaCanal.DoesNotExist:
+                pass
+        
+        return videos_encontrados
             
 class EventoBolaloca(models.Model):
     fecha = models.DateField()
