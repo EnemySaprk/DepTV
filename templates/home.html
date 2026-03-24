@@ -34,6 +34,77 @@
     {% endif %}
 </section>
 
+<!-- PARTIDOS DE HOY -->
+{% if partidos_hoy %}
+<section class="channel-section mb-4">
+    <div class="channel-header">
+        <a href="{% url 'canales:agenda' %}" class="channel-header-link">
+            <span class="channel-icon" style="background: linear-gradient(135deg, #e60000, #990000);"><i class="bi bi-calendar-event-fill"></i></span>
+            <h5 class="channel-name">Partidos de Hoy</h5>
+            <i class="bi bi-chevron-right channel-arrow"></i>
+        </a>
+    </div>
+    <div class="carousel-wrapper">
+        <button class="carousel-btn carousel-btn-left" onclick="scrollCarousel(this, -1)"><i class="bi bi-chevron-left"></i></button>
+        <div class="carousel-track">
+            {% for partido in partidos_hoy %}
+            <div class="home-match-card" onclick="toggleHomeCanales(this)">
+                <div class="home-match-time">
+                    {% if partido.estado == 'NS' %}
+                        {{ partido.hora|time:'H:i' }}
+                    {% elif partido.estado == 'FT' %}
+                        <span style="color: #5a7a9a;">FIN</span>
+                    {% else %}
+                        <span style="color: #e60000;"><i class="bi bi-broadcast"></i> VIVO</span>
+                    {% endif %}
+                </div>
+                <div class="home-match-liga">
+                    {% if partido.liga_logo %}
+                    <img src="{{ partido.liga_logo }}" alt="{{ partido.liga_nombre }}">
+                    {% endif %}
+                    <span>{{ partido.liga_nombre }}</span>
+                </div>
+                <div class="home-match-teams">
+                    <div class="home-match-team">
+                        {% if partido.equipo_local_logo %}
+                        <img src="{{ partido.equipo_local_logo }}" alt="{{ partido.equipo_local }}">
+                        {% endif %}
+                        <span>{{ partido.equipo_local }}</span>
+                        {% if partido.goles_local != None %}
+                        <strong>{{ partido.goles_local }}</strong>
+                        {% endif %}
+                    </div>
+                    <div class="home-match-team">
+                        {% if partido.equipo_visitante_logo %}
+                        <img src="{{ partido.equipo_visitante_logo }}" alt="{{ partido.equipo_visitante }}">
+                        {% endif %}
+                        <span>{{ partido.equipo_visitante }}</span>
+                        {% if partido.goles_visitante != None %}
+                        <strong>{{ partido.goles_visitante }}</strong>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if partido.canales_transmision %}
+                <div class="home-match-channels">
+                    {% for video in partido.canales_transmision %}
+                    <a href="{% url 'canales:detalle_video' video.pk %}" class="home-match-ch" onclick="event.stopPropagation();">
+                        {% if video.canal.logo %}
+                        <img src="{{ video.canal.logo.url }}" alt="{{ video.titulo }}" title="{{ video.titulo }}">
+                        {% else %}
+                        <span title="{{ video.titulo }}">{{ video.titulo|truncatechars:8 }}</span>
+                        {% endif %}
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-btn carousel-btn-right" onclick="scrollCarousel(this, 1)"><i class="bi bi-chevron-right"></i></button>
+    </div>
+</section>
+{% endif %}
+
 <!-- CANALES -->
 {% for item in canales_con_videos %}
 <section class="channel-section mb-4">

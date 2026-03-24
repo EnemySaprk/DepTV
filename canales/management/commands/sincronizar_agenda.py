@@ -19,12 +19,20 @@ LIGAS = {
     'CL': {'nombre': 'Champions League', 'id': 2001},
 }
 
-# Ligas que se cargan solo de bolaloca (no estan en football-data gratis)
+# Ligas que se cargan solo de bolaloca
 LIGAS_BOLALOCA = [
     'liga betplay',
     'copa libertadores',
     'copa sudamericana',
     'eliminatorias',
+    'europa league',
+    'conference league',
+    'amistoso',
+    'friendly',
+    'world cup qualif',
+    'uefa nations league',
+    'conmebol',
+    'copa america',
 ]
 
 EQUIPOS_MAP = {
@@ -52,6 +60,39 @@ EQUIPOS_MAP = {
     'lyon': 'lyonnais',
     'rennes': 'rennais',
     'strasbourg': 'strasbourg',
+    'bilbao': 'athletic club',
+    'villarreal': 'villarreal',
+    'getafe': 'getafe',
+    'sevilla': 'sevilla',
+    'valencia': 'valencia',
+    'real sociedad': 'real sociedad',
+    'napoli': 'napoli',
+    'juventus': 'juventus',
+    'fiorentina': 'fiorentina',
+    'bologna': 'bologna',
+    'atalanta': 'atalanta',
+    'torino': 'torino',
+    'monaco': 'monaco',
+    'lille': 'lille',
+    'marseille': 'marseille',
+    'nantes': 'nantes',
+    'hoffenheim': 'hoffenheim',
+    'wolfsburg': 'wolfsburg',
+    'mainz': 'mainz',
+    'union berlin': 'union berlin',
+    'freiburg': 'freiburg',
+    'augsburg': 'augsburg',
+    'frankfurt': 'eintracht frankfurt',
+    'leverkusen': 'leverkusen',
+    'liverpool': 'liverpool',
+    'arsenal': 'arsenal',
+    'chelsea': 'chelsea',
+    'everton': 'everton',
+    'fulham': 'fulham',
+    'brentford': 'brentford',
+    'bournemouth': 'bournemouth',
+    'burnley': 'burnley',
+    'sunderland': 'sunderland',
 }
 
 
@@ -87,19 +128,19 @@ class Command(BaseCommand):
         if borrados:
             self.stdout.write(f'Partidos viejos borrados: {borrados}')
 
-        # Paso 1: Cargar bolaloca primero (canales + ligas extra)
+        # Paso 1: Cargar bolaloca
         self.stdout.write('\n=== BOLALOCA (canales + ligas extra) ===')
         agenda_bolaloca = self.cargar_bolaloca()
 
-        # Paso 2: Cargar ligas extra de bolaloca (BetPlay, Libertadores, etc)
-        self.stdout.write('\n=== LIGAS EXTRA (solo bolaloca) ===')
+        # Paso 2: Cargar ligas extra de bolaloca
+        self.stdout.write('\n=== LIGAS EXTRA (bolaloca) ===')
         extra_creados = self.cargar_ligas_extra_bolaloca(agenda_bolaloca)
 
         # Paso 3: Cargar partidos con logos desde football-data.org
-        self.stdout.write('\n=== FOOTBALL-DATA.ORG (logos + equipos) ===')
+        self.stdout.write('\n=== FOOTBALL-DATA.ORG (logos) ===')
         self.cargar_football_data(dias)
 
-        # Paso 4: Cruzar canales de bolaloca con partidos de football-data
+        # Paso 4: Cruzar canales
         self.stdout.write('\n=== CRUZANDO CANALES ===')
         asignados = 0
         for partido in Partido.objects.filter(canales_bolaloca=''):
@@ -116,7 +157,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             f'\nResumen:'
             f'\n  Canales asignados: {asignados}'
-            f'\n  Ligas extra (BetPlay, etc): {extra_creados}'
+            f'\n  Ligas extra: {extra_creados}'
             f'\n  Total partidos en DB: {Partido.objects.count()}'
         ))
 
@@ -160,8 +201,7 @@ class Command(BaseCommand):
             except ValueError:
                 continue
 
-            # Bolaloca usa hora de Europa (CET/CEST), convertir a Colombia
-            # CET = UTC+1, Colombia = UTC-5, diferencia = 6 horas
+            # Bolaloca usa CET (UTC+1), convertir a Colombia (UTC-5) = restar 6 horas
             dt_cet = datetime.combine(fecha, hora)
             dt_col = dt_cet - timedelta(hours=6)
 

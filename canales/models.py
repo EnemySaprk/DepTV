@@ -103,7 +103,6 @@ class Video(models.Model):
     def __str__(self):
         return self.titulo
 
-
     @staticmethod
     def extraer_youtube_id(url):
         import re
@@ -166,7 +165,7 @@ class EnlaceVideo(models.Model):
         if self.tipo == 'youtube' and self.youtube_id:
             return f'https://www.youtube.com/embed/{self.youtube_id}'
         return self.url
-    
+
 
 class BannerImagen(models.Model):
     titulo = models.CharField(max_length=200, blank=True)
@@ -195,7 +194,6 @@ class BannerImagen(models.Model):
 
     def redimensionar_imagen(self):
         from PIL import Image
-        import os
 
         try:
             img_path = self.imagen.path
@@ -208,7 +206,6 @@ class BannerImagen(models.Model):
             target_w = self.BANNER_WIDTH
             target_h = self.BANNER_HEIGHT
             target_ratio = target_w / target_h
-
             img_ratio = img_width / img_height
 
             if img_ratio > target_ratio:
@@ -227,8 +224,9 @@ class BannerImagen(models.Model):
         except Exception as e:
             print(f'Error redimensionando banner: {e}')
 
+
 class MapeoLigaCanal(models.Model):
-    """Mapeo automático: cuando un partido es de X liga, se transmite por Y canales"""
+    """Mapeo automático: cuando un partido es de X liga, se transmite por Y canales."""
     liga_api_id = models.PositiveIntegerField(unique=True, help_text='ID de la liga en API-Football')
     liga_nombre = models.CharField(max_length=100, help_text='Nombre de la liga (ej: La Liga, Premier League)')
     canales = models.ManyToManyField('Video', blank=True, help_text='Videos/canales que transmiten esta liga')
@@ -245,34 +243,52 @@ class MapeoLigaCanal(models.Model):
 
 class Partido(models.Model):
     ESTADO_CHOICES = [
-        ('NS', 'No iniciado'),
-        ('1H', 'Primer tiempo'),
-        ('HT', 'Entretiempo'),
-        ('2H', 'Segundo tiempo'),
-        ('FT', 'Finalizado'),
-        ('AET', 'Tiempo extra'),
-        ('PEN', 'Penales'),
+        ('NS',   'No iniciado'),
+        ('1H',   'Primer tiempo'),
+        ('HT',   'Entretiempo'),
+        ('2H',   'Segundo tiempo'),
+        ('FT',   'Finalizado'),
+        ('AET',  'Tiempo extra'),
+        ('PEN',  'Penales'),
         ('SUSP', 'Suspendido'),
-        ('PST', 'Pospuesto'),
+        ('PST',  'Pospuesto'),
         ('CANC', 'Cancelado'),
         ('LIVE', 'En vivo'),
     ]
 
-    api_id = models.PositiveIntegerField(unique=True, help_text='ID del fixture en API-Football')
-    liga_nombre = models.CharField(max_length=100)
-    liga_logo = models.URLField(blank=True)
-    liga_api_id = models.PositiveIntegerField(default=0)
-    equipo_local = models.CharField(max_length=100)
-    equipo_local_logo = models.URLField(blank=True)
-    equipo_visitante = models.CharField(max_length=100)
+    api_id              = models.PositiveIntegerField(unique=True, help_text='ID del fixture en API-Football')
+    liga_nombre         = models.CharField(max_length=100)
+    liga_logo           = models.URLField(blank=True)
+    liga_api_id         = models.PositiveIntegerField(default=0)
+    equipo_local        = models.CharField(max_length=100)
+    equipo_local_logo   = models.URLField(blank=True)
+    equipo_visitante    = models.CharField(max_length=100)
     equipo_visitante_logo = models.URLField(blank=True)
-    fecha = models.DateField()
-    hora = models.TimeField()
-    estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='NS')
-    goles_local = models.PositiveIntegerField(null=True, blank=True)
-    goles_visitante = models.PositiveIntegerField(null=True, blank=True)
+    fecha               = models.DateField()
+    hora                = models.TimeField()
+    estado              = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='NS')
+    goles_local         = models.PositiveIntegerField(null=True, blank=True)
+    goles_visitante     = models.PositiveIntegerField(null=True, blank=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
-    canales_bolaloca = models.CharField(max_length=200, blank=True, help_text='Canales bolaloca (ej: 81,87,94)')
+    canales_bolaloca    = models.CharField(
+        max_length=200, blank=True,
+        help_text='Números de canales bolaloca separados por coma (ej: 81,87,94)',
+    )
+
+    # tvtvhd_id → bolaloca número
+    _MAPEO_TVTVHD = {
+        56: 'dazn1',
+        57: 'dazn2',
+        58: 'dazn_laliga',
+        49: 'daznf1',
+        51: 'dazn_laliga',
+        44: 'm_laligatv',
+        46: 'ligadecampeones1',
+        47: 'ligadecampeones2',
+        81: 'winsportsplus',
+        82: 'winsports2',
+        50: 'm_laligatv2',
+    }
 
     class Meta:
         ordering = ['fecha', 'hora']
@@ -284,66 +300,66 @@ class Partido(models.Model):
 
     @property
     def canales_transmision(self):
-        """Retorna los videos que transmiten este partido basado en canales bolaloca + tvtvhd"""
+        """
+        Retorna SIEMPRE un QuerySet de Video con los canales que transmiten
+        este partido. Nunca retorna una lista (evita errores con .all() en templates).
+
+        Prioridad:
+          1. Videos vinculados por bolaloca_canal__numero
+          2. Videos vinculados por tvtvhd_id
+          3. MapeoLigaCanal para la liga del partido
+          4. QuerySet vacío
+        """
         from canales.models import Video, MapeoLigaCanal
-        
-        videos_encontrados = []
-        
+
+        pks = set()
+
         if self.canales_bolaloca:
-            numeros = [int(n.strip()) for n in self.canales_bolaloca.split(',') if n.strip().isdigit()]
-            
-            # Buscar por bolaloca_canal
-            por_bolaloca = Video.objects.filter(
-                activo=True,
-                bolaloca_canal__numero__in=numeros
-            ).select_related('canal')
-            videos_encontrados.extend(list(por_bolaloca))
-            
-            # Buscar videos sin bolaloca pero que correspondan por mapeo de canal
-            # CH56=DAZN1, CH57=DAZN2, CH58=DAZN LaLiga, CH49=DAZN F1
-            # CH44=M+LaLiga, CH46=Champions1, CH47=Champions2
-            # CH81=WinSports+, CH82=WinSports2
-            mapeo_tvtvhd = {
-                56: 'dazn1',
-                57: 'dazn2',
-                58: 'dazn_laliga',
-                49: 'daznf1',
-                51: 'dazn_laliga',
-                44: 'm_laligatv',
-                46: 'ligadecampeones1',
-                47: 'ligadecampeones2',
-                81: 'winsportsplus',
-                82: 'winsports2',
-                50: 'm_laligatv2',
-            }
-            
-            for num in numeros:
-                tvtvhd = mapeo_tvtvhd.get(num)
-                if tvtvhd:
-                    por_tvtvhd = Video.objects.filter(
-                        activo=True,
-                        tvtvhd_id=tvtvhd
-                    ).select_related('canal')
-                    for v in por_tvtvhd:
-                        if v not in videos_encontrados:
-                            videos_encontrados.append(v)
-        
-        if not videos_encontrados:
-            try:
-                mapeo = MapeoLigaCanal.objects.get(liga_api_id=self.liga_api_id, activo=True)
-                return mapeo.canales.filter(activo=True)
-            except MapeoLigaCanal.DoesNotExist:
-                pass
-        
-        return videos_encontrados
-            
+            numeros = [
+                int(n.strip())
+                for n in self.canales_bolaloca.split(',')
+                if n.strip().isdigit()
+            ]
+
+            # 1) Por bolaloca_canal
+            pks.update(
+                Video.objects
+                .filter(activo=True, bolaloca_canal__numero__in=numeros)
+                .values_list('pk', flat=True)
+            )
+
+            # 2) Por tvtvhd_id
+            tvtvhd_ids = [self._MAPEO_TVTVHD[n] for n in numeros if n in self._MAPEO_TVTVHD]
+            if tvtvhd_ids:
+                pks.update(
+                    Video.objects
+                    .filter(activo=True, tvtvhd_id__in=tvtvhd_ids)
+                    .values_list('pk', flat=True)
+                )
+
+        if pks:
+            return (
+                Video.objects
+                .filter(pk__in=pks, activo=True)
+                .select_related('canal')
+                .order_by('canal__nombre', 'titulo')
+            )
+
+        # 3) Fallback: MapeoLigaCanal
+        try:
+            mapeo = MapeoLigaCanal.objects.get(liga_api_id=self.liga_api_id, activo=True)
+            return mapeo.canales.filter(activo=True).select_related('canal')
+        except MapeoLigaCanal.DoesNotExist:
+            return Video.objects.none()  # ← siempre QuerySet, nunca lista
+
+
 class EventoBolaloca(models.Model):
-    fecha = models.DateField()
-    hora = models.TimeField()
-    liga = models.CharField(max_length=100)
+    fecha   = models.DateField()
+    hora    = models.TimeField()
+    liga    = models.CharField(max_length=100)
     partido = models.CharField(max_length=200)
     canales = models.ManyToManyField(CanalBolaloca, blank=True)
-    activo = models.BooleanField(default=True)
+    activo  = models.BooleanField(default=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     class Meta:

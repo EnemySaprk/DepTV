@@ -1,888 +1,1714 @@
-﻿<!DOCTYPE html>
+﻿<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block titulo %}FutbolTube{% endblock %}</title>
-    <link rel="manifest" href="/static/manifest.json">
-    <meta name="theme-color" content="#070e16">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="manifest" href="/static/manifest.json" />
+    <meta name="theme-color" content="#070e16" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background-color: #070e16;
-            color: #e8e8e8;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            overflow-x: hidden;
-        }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background-color: #070e16;
+        color: #e8e8e8;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        overflow-x: hidden;
+      }
 
-        /* NAVBAR */
-        .navbar-custom {
-            background: linear-gradient(180deg, rgba(10,22,40,0.95) 0%, rgba(10,22,40,0.8) 100%);
-            border-bottom: none;
-            height: 60px;
-            z-index: 1050;
-            backdrop-filter: blur(12px);
-        }
-        .navbar-brand { color: #0082e6 !important; font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px; }
-        .nav-link { color: #8899aa !important; transition: color 0.2s; }
-        .nav-link:hover { color: #0082e6 !important; }
+      /* NAVBAR */
+      .navbar-custom {
+        background: linear-gradient(
+          180deg,
+          rgba(10, 22, 40, 0.95) 0%,
+          rgba(10, 22, 40, 0.8) 100%
+        );
+        border-bottom: none;
+        height: 60px;
+        z-index: 1050;
+        backdrop-filter: blur(12px);
+      }
+      .navbar-brand {
+        color: #0082e6 !important;
+        font-weight: 800;
+        font-size: 1.5rem;
+        letter-spacing: -0.5px;
+      }
+      .nav-link {
+        color: #8899aa !important;
+        transition: color 0.2s;
+      }
+      .nav-link:hover {
+        color: #0082e6 !important;
+      }
 
-        /* SIDEBAR */
-        .sidebar {
-            position: fixed;
-            top: 60px;
-            left: 0;
-            height: calc(100vh - 60px);
-            width: 70px;
-            background: linear-gradient(180deg, #0a1628, #060d17);
-            transition: width 0.3s ease;
-            overflow-x: hidden;
-            overflow-y: auto;
-            z-index: 1040;
-            border-right: 1px solid rgba(0,130,230,0.15);
-        }
-        .sidebar::-webkit-scrollbar { width: 3px; }
-        .sidebar::-webkit-scrollbar-thumb { background: #0082e6; border-radius: 4px; }
-        .sidebar.expanded { width: 240px; }
-        .sidebar.expanded .sidebar-text { display: inline; }
-        .sidebar.expanded .sidebar-section-title { display: block; }
-        .sidebar-text { display: none; white-space: nowrap; font-size: 0.85rem; }
-        .sidebar-section-title {
-            display: none;
-            color: #0082e6;
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.65rem;
-            letter-spacing: 1.5px;
-            padding: 20px 16px 8px;
-        }
-        .sidebar-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 16px;
-            color: #8899aa;
-            text-decoration: none;
-            transition: all 0.2s;
-            border-left: 3px solid transparent;
-        }
-        .sidebar-item:hover {
-            background: rgba(0,130,230,0.1);
-            color: #ffffff;
-            border-left-color: #0082e6;
-        }
-        .sidebar-item img {
-            width: 34px;
-            height: 34px;
-            border-radius: 8px;
-            object-fit: cover;
-            flex-shrink: 0;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .sidebar-item .icon-placeholder {
-            width: 34px;
-            height: 34px;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #0082e6, #005a9e);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 0.9rem;
-            color: #fff;
-        }
+      /* SIDEBAR */
+      .sidebar {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        height: calc(100vh - 60px);
+        width: 70px;
+        background: linear-gradient(180deg, #0a1628, #060d17);
+        transition: width 0.3s ease;
+        overflow-x: hidden;
+        overflow-y: auto;
+        z-index: 1040;
+        border-right: 1px solid rgba(0, 130, 230, 0.15);
+      }
+      .sidebar::-webkit-scrollbar {
+        width: 3px;
+      }
+      .sidebar::-webkit-scrollbar-thumb {
+        background: #0082e6;
+        border-radius: 4px;
+      }
+      .sidebar.expanded {
+        width: 240px;
+      }
+      .sidebar.expanded .sidebar-text {
+        display: inline;
+      }
+      .sidebar.expanded .sidebar-section-title {
+        display: block;
+      }
+      .sidebar-text {
+        display: none;
+        white-space: nowrap;
+        font-size: 0.85rem;
+      }
+      .sidebar-section-title {
+        display: none;
+        color: #0082e6;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.65rem;
+        letter-spacing: 1.5px;
+        padding: 20px 16px 8px;
+      }
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 16px;
+        color: #8899aa;
+        text-decoration: none;
+        transition: all 0.2s;
+        border-left: 3px solid transparent;
+      }
+      .sidebar-item:hover {
+        background: rgba(0, 130, 230, 0.1);
+        color: #ffffff;
+        border-left-color: #0082e6;
+      }
+      .sidebar-item img {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        object-fit: cover;
+        flex-shrink: 0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .sidebar-item .icon-placeholder {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #0082e6, #005a9e);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 0.9rem;
+        color: #fff;
+      }
 
-        /* MAIN CONTENT */
-        .main-content {
-            margin-left: 70px;
-            margin-top: 60px;
-            padding: 0;
-            transition: margin-left 0.3s ease;
-        }
-        .main-content.shifted { margin-left: 240px; }
+      /* MAIN CONTENT */
+      .main-content {
+        margin-left: 70px;
+        margin-top: 60px;
+        padding: 0;
+        transition: margin-left 0.3s ease;
+      }
+      .main-content.shifted {
+        margin-left: 240px;
+      }
 
-        /* HERO SLIDER - ESTILO DAZN */
-        .hero-slider {
-            position: relative;
-            width: 100%;
-            height: 520px;
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
-        .hero-slider-page {
-            height: 420px;
-        }
-        .slider-track { position: relative; width: 100%; height: 100%; }
-        .slide {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            opacity: 0;
-            z-index: 1;
-            transition: opacity 1.2s ease-in-out;
-            pointer-events: none;
-        }
-        .slide.active { opacity: 1; z-index: 2; pointer-events: auto; }
-        .slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center top;
-        }
-        .slide-gradient {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background:
-                linear-gradient(0deg, #070e16 0%, rgba(7,14,22,0.7) 30%, rgba(7,14,22,0) 60%),
-                linear-gradient(90deg, rgba(7,14,22,0.85) 0%, rgba(7,14,22,0.6) 30%, rgba(7,14,22,0) 55%);
-        }
-        .slide-content {
-            position: absolute;
-            bottom: 80px;
-            left: 40px;
-            z-index: 3;
-            max-width: 500px;
-        }
-        .slide-logo {
-            width: 50px;
-            height: 50px;
-            min-width: 50px;
-            min-height: 50px;
-            max-width: 50px;
-            max-height: 50px;
-            border-radius: 10px;
-            object-fit: contain;
-            background: #fff;
-            padding: 4px;
-            border: 2px solid rgba(255,255,255,0.2);
-            margin-bottom: 12px;
-        }
-        .slide-title {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: #fff;
-            text-shadow: 0 2px 20px rgba(0,0,0,0.5);
-            line-height: 1.1;
-            margin-bottom: 10px;
-        }
-        .slide-desc {
-            font-size: 0.95rem;
-            color: rgba(255,255,255,0.75);
-            line-height: 1.5;
-            margin-bottom: 16px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .slide-btn {
-            display: inline-block;
-            padding: 10px 28px;
-            background: #ffffff;
-            color: #070e16;
-            font-weight: 700;
-            font-size: 0.9rem;
-            border-radius: 4px;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        .slide-btn:hover { background: #0082e6; color: #fff; }
-        .slide-fallback {
-            width: 100%; height: 100%;
-            background: linear-gradient(135deg, #0a1628 0%, #0d2847 40%, #0082e6 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 0 40px;
-        }
-        .slide-fallback .hero-title {
-            font-size: 3.5rem;
-            font-weight: 900;
-            letter-spacing: 2px;
-            background: linear-gradient(90deg, #ffffff, #0082e6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .slide-fallback .hero-subtitle {
-            font-size: 1.1rem;
-            color: rgba(255,255,255,0.7);
-            margin-top: 8px;
-        }
+      /* HERO SLIDER - ESTILO DAZN */
+      .hero-slider {
+        position: relative;
+        width: 100%;
+        height: 520px;
+        overflow: hidden;
+        margin-bottom: 30px;
+      }
+      .hero-slider-page {
+        height: 420px;
+      }
+      .slider-track {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+      .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        z-index: 1;
+        transition: opacity 1.2s ease-in-out;
+        pointer-events: none;
+      }
+      .slide.active {
+        opacity: 1;
+        z-index: 2;
+        pointer-events: auto;
+      }
+      .slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center top;
+      }
+      .slide-gradient {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+          linear-gradient(
+            0deg,
+            #070e16 0%,
+            rgba(7, 14, 22, 0.7) 30%,
+            rgba(7, 14, 22, 0) 60%
+          ),
+          linear-gradient(
+            90deg,
+            rgba(7, 14, 22, 0.85) 0%,
+            rgba(7, 14, 22, 0.6) 30%,
+            rgba(7, 14, 22, 0) 55%
+          );
+      }
+      .slide-content {
+        position: absolute;
+        bottom: 80px;
+        left: 40px;
+        z-index: 3;
+        max-width: 500px;
+      }
+      .slide-logo {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        min-height: 50px;
+        max-width: 50px;
+        max-height: 50px;
+        border-radius: 10px;
+        object-fit: contain;
+        background: #fff;
+        padding: 4px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        margin-bottom: 12px;
+      }
+      .slide-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #fff;
+        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+        line-height: 1.1;
+        margin-bottom: 10px;
+      }
+      .slide-desc {
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.75);
+        line-height: 1.5;
+        margin-bottom: 16px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .slide-btn {
+        display: inline-block;
+        padding: 10px 28px;
+        background: #ffffff;
+        color: #070e16;
+        font-weight: 700;
+        font-size: 0.9rem;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: all 0.2s;
+      }
+      .slide-btn:hover {
+        background: #0082e6;
+        color: #fff;
+      }
+      .slide-fallback {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          #0a1628 0%,
+          #0d2847 40%,
+          #0082e6 100%
+        );
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 40px;
+      }
+      .slide-fallback .hero-title {
+        font-size: 3.5rem;
+        font-weight: 900;
+        letter-spacing: 2px;
+        background: linear-gradient(90deg, #ffffff, #0082e6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .slide-fallback .hero-subtitle {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-top: 8px;
+      }
 
-        /* SLIDER ARROWS */
-        .slider-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 5;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.3);
-            background: rgba(0,0,0,0.4);
-            color: #fff;
-            font-size: 1.2rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-            backdrop-filter: blur(4px);
-        }
-        .slider-arrow:hover {
-            background: rgba(0,130,230,0.7);
-            border-color: #0082e6;
-        }
-        .slider-arrow-left { left: 16px; }
-        .slider-arrow-right { right: 16px; }
+      /* SLIDER ARROWS */
+      .slider-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 5;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        background: rgba(0, 0, 0, 0.4);
+        color: #fff;
+        font-size: 1.2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        backdrop-filter: blur(4px);
+      }
+      .slider-arrow:hover {
+        background: rgba(0, 130, 230, 0.7);
+        border-color: #0082e6;
+      }
+      .slider-arrow-left {
+        left: 16px;
+      }
+      .slider-arrow-right {
+        right: 16px;
+      }
 
-        /* SLIDER DOTS */
-        .slider-dots {
-            position: absolute;
-            bottom: 24px;
-            left: 40px;
-            z-index: 5;
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.35);
-            cursor: pointer;
-            transition: all 0.4s;
-        }
-        .dot.active {
-            background: #ffffff;
-            width: 30px;
-            border-radius: 4px;
-        }
+      /* SLIDER DOTS */
+      .slider-dots {
+        position: absolute;
+        bottom: 24px;
+        left: 40px;
+        z-index: 5;
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.35);
+        cursor: pointer;
+        transition: all 0.4s;
+      }
+      .dot.active {
+        background: #ffffff;
+        width: 30px;
+        border-radius: 4px;
+      }
 
-        /* CHANNEL SECTION */
-        .channel-section { padding: 0 24px; }
-        .channel-header { margin-bottom: 12px; }
-        .channel-header-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: #fff;
-            transition: all 0.2s;
-        }
-        .channel-header-link:hover { color: #0082e6; }
-        .channel-header-link:hover .channel-arrow { transform: translateX(4px); color: #0082e6; }
-        .channel-logo {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            object-fit: cover;
-            border: 2px solid rgba(0,130,230,0.3);
-        }
-        .channel-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #0082e6, #005a9e);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            color: #fff;
-        }
-        .channel-name { font-weight: 700; font-size: 1.15rem; margin: 0; }
-        .channel-arrow { color: #5a7a9a; font-size: 0.9rem; transition: all 0.2s; }
+      /* CHANNEL SECTION */
+      .channel-section {
+        padding: 0 24px;
+      }
+      .channel-header {
+        margin-bottom: 12px;
+      }
+      .channel-header-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        color: #fff;
+        transition: all 0.2s;
+      }
+      .channel-header-link:hover {
+        color: #0082e6;
+      }
+      .channel-header-link:hover .channel-arrow {
+        transform: translateX(4px);
+        color: #0082e6;
+      }
+      .channel-logo {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        object-fit: cover;
+        border: 2px solid rgba(0, 130, 230, 0.3);
+      }
+      .channel-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #0082e6, #005a9e);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        color: #fff;
+      }
+      .channel-name {
+        font-weight: 700;
+        font-size: 1.15rem;
+        margin: 0;
+      }
+      .channel-arrow {
+        color: #5a7a9a;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+      }
 
-        /* CAROUSEL */
-        .carousel-wrapper { position: relative; }
-        .carousel-track {
-            display: flex;
-            gap: 14px;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            padding: 4px 0 16px;
-            scrollbar-width: none;
-        }
-        .carousel-track::-webkit-scrollbar { display: none; }
-        .carousel-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-60%);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(0,130,230,0.9);
-            color: #fff;
-            font-size: 1.1rem;
-            cursor: pointer;
-            z-index: 10;
-            opacity: 0;
-            transition: opacity 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .carousel-wrapper:hover .carousel-btn { opacity: 1; }
-        .carousel-btn-left { left: -8px; }
-        .carousel-btn-right { right: -8px; }
-        .carousel-btn:hover { background: #0082e6; }
+      /* CAROUSEL */
+      .carousel-wrapper {
+        position: relative;
+      }
+      .carousel-track {
+        display: flex;
+        gap: 14px;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        padding: 4px 0 16px;
+        scrollbar-width: none;
+      }
+      .carousel-track::-webkit-scrollbar {
+        display: none;
+      }
+      .carousel-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-60%);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(0, 130, 230, 0.9);
+        color: #fff;
+        font-size: 1.1rem;
+        cursor: pointer;
+        z-index: 10;
+        opacity: 0;
+        transition: opacity 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .carousel-wrapper:hover .carousel-btn {
+        opacity: 1;
+      }
+      .carousel-btn-left {
+        left: -8px;
+      }
+      .carousel-btn-right {
+        right: -8px;
+      }
+      .carousel-btn:hover {
+        background: #0082e6;
+      }
 
-        /* CAROUSEL CARDS */
-        .carousel-card {
-            flex: 0 0 200px;
-            text-decoration: none;
-            color: inherit;
-            transition: transform 0.25s;
+      /* CAROUSEL CARDS */
+      .carousel-card {
+        flex: 0 0 200px;
+        text-decoration: none;
+        color: inherit;
+        transition: transform 0.25s;
+      }
+      .carousel-card:hover {
+        transform: scale(1.05);
+      }
+      .card-thumb {
+        position: relative;
+        border-radius: 10px;
+        overflow: hidden;
+        aspect-ratio: 16/9;
+        background: #0d1b2a;
+      }
+      .card-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .card-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .carousel-card:hover .card-overlay {
+        opacity: 1;
+      }
+      .play-icon {
+        font-size: 2.5rem;
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .thumb-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #0d1b2a, #112240);
+        font-size: 2rem;
+        color: #0082e6;
+      }
+      .live-badge {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        background: #e60000;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        animation: pulse-live 2s infinite;
+      }
+      @keyframes pulse-live {
+        0%,
+        100% {
+          opacity: 1;
         }
-        .carousel-card:hover { transform: scale(1.05); }
-        .card-thumb {
-            position: relative;
-            border-radius: 10px;
-            overflow: hidden;
-            aspect-ratio: 16/9;
-            background: #0d1b2a;
+        50% {
+          opacity: 0.7;
         }
-        .card-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .card-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .carousel-card:hover .card-overlay { opacity: 1; }
-        .play-icon { font-size: 2.5rem; color: rgba(255,255,255,0.9); }
-        .thumb-placeholder {
-            width: 100%; height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #0d1b2a, #112240);
-            font-size: 2rem;
-            color: #0082e6;
-        }
-        .live-badge {
-            position: absolute;
-            top: 8px; left: 8px;
-            background: #e60000;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            animation: pulse-live 2s infinite;
-        }
-        @keyframes pulse-live {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        .card-info { padding: 8px 2px; }
-        .card-title-text {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #e8e8e8;
-            margin: 0;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .card-channel { font-size: 0.75rem; color: #5a7a9a; }
+      }
+      .card-info {
+        padding: 8px 2px;
+      }
+      .card-title-text {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #e8e8e8;
+        margin: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .card-channel {
+        font-size: 0.75rem;
+        color: #5a7a9a;
+      }
 
-        /* CHANNEL/LIGA BANNER (fallback) */
-        .channel-banner {
-            position: relative;
-            height: 200px;
-            background: linear-gradient(135deg, #0a1628 0%, #0d2847 50%, #0082e6 100%);
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        .channel-banner::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            height: 80px;
-            background: linear-gradient(transparent, #070e16);
-        }
-        .channel-banner-content {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            padding: 0 40px;
-        }
-        .banner-logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 16px;
-            object-fit: cover;
-            border: 3px solid rgba(255,255,255,0.2);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-        .banner-logo-placeholder {
-            width: 80px;
-            height: 80px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #0082e6, #005a9e);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: #fff;
-        }
-        .banner-title { font-size: 2rem; font-weight: 800; color: #fff; margin: 0; }
-        .banner-desc { color: rgba(255,255,255,0.7); margin: 4px 0 0; font-size: 0.95rem; }
-        .banner-link { color: #0082e6; font-size: 0.85rem; text-decoration: none; }
-        .banner-link:hover { text-decoration: underline; }
+      /* CHANNEL/LIGA BANNER (fallback) */
+      .channel-banner {
+        position: relative;
+        height: 200px;
+        background: linear-gradient(
+          135deg,
+          #0a1628 0%,
+          #0d2847 50%,
+          #0082e6 100%
+        );
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+      .channel-banner::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 80px;
+        background: linear-gradient(transparent, #070e16);
+      }
+      .channel-banner-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 0 40px;
+      }
+      .banner-logo {
+        width: 80px;
+        height: 80px;
+        border-radius: 16px;
+        object-fit: cover;
+        border: 3px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+      .banner-logo-placeholder {
+        width: 80px;
+        height: 80px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #0082e6, #005a9e);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: #fff;
+      }
+      .banner-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #fff;
+        margin: 0;
+      }
+      .banner-desc {
+        color: rgba(255, 255, 255, 0.7);
+        margin: 4px 0 0;
+        font-size: 0.95rem;
+      }
+      .banner-link {
+        color: #0082e6;
+        font-size: 0.85rem;
+        text-decoration: none;
+      }
+      .banner-link:hover {
+        text-decoration: underline;
+      }
 
+      /* PAGE WITH BACKGROUND (DAZN STYLE) */
+      .page-with-bg {
+        position: relative;
+      }
+      .page-bg {
+        position: absolute;
+        top: -60px;
+        left: -70px;
+        width: calc(100% + 70px);
+        height: 0;
+        padding-bottom: 56.25%;
+        overflow: hidden;
+        z-index: 0;
+      }
+      .bg-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        z-index: 1;
+        transition: opacity 1.2s ease-in-out;
+        pointer-events: none;
+      }
+      .bg-slide.active {
+        opacity: 1;
+        z-index: 2;
+        pointer-events: auto;
+      }
+      .bg-slide img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .page-bg-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 3;
+        background:
+          linear-gradient(
+            180deg,
+            transparent 0%,
+            transparent 40%,
+            rgba(7, 14, 22, 0.6) 60%,
+            rgba(7, 14, 22, 0.9) 75%,
+            #070e16 90%
+          ),
+          linear-gradient(90deg, rgba(7, 14, 22, 0.5) 0%, transparent 40%);
+      }
+      .page-bg-gradient {
+        position: absolute;
+        top: -60px;
+        left: -70px;
+        width: calc(100% + 70px);
+        height: 0;
+        padding-bottom: 56.25%;
+        z-index: 1;
+        pointer-events: none;
+        background:
+          linear-gradient(
+            180deg,
+            transparent 0%,
+            transparent 35%,
+            rgba(7, 14, 22, 0.5) 55%,
+            rgba(7, 14, 22, 0.85) 72%,
+            #070e16 85%
+          ),
+          linear-gradient(
+            90deg,
+            rgba(7, 14, 22, 0.55) 0%,
+            rgba(7, 14, 22, 0.15) 25%,
+            transparent 45%
+          );
+      }
+      .page-content {
+        position: relative;
+        z-index: 2;
+        padding: 0 24px;
+      }
+      .page-header {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+        padding-top: 38vw;
+        padding-bottom: 16px;
+      }
+      .page-header-top {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .page-header-logo {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        min-height: 50px;
+        max-width: 50px;
+        max-height: 50px;
+        border-radius: 10px;
+        object-fit: contain;
+        background: #fff;
+        padding: 5px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+      }
+      .page-header-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #fff;
+        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+        margin: 0;
+      }
+      .page-header-desc {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+        margin: 0;
+      }
+      .page-bg-dots {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        margin-bottom: 10px;
+      }
 
-        /* PAGE WITH BACKGROUND (DAZN STYLE) */
-        .page-with-bg {
-            position: relative;
-        }
-        .page-bg {
-            position: absolute;
-            top: -60px;
-            left: -70px;
-            width: calc(100% + 70px);
-            height: 0;
-            padding-bottom: 56.25%;
-            overflow: hidden;
-            z-index: 0;
-        }
-        .bg-slide {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            opacity: 0;
-            z-index: 1;
-            transition: opacity 1.2s ease-in-out;
-            pointer-events: none;
-        }
-        .bg-slide.active { opacity: 1; z-index: 2; pointer-events: auto; }
-        .bg-slide img {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .page-bg-overlay {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 3;
-            background:
-                linear-gradient(180deg,
-                    transparent 0%,
-                    transparent 40%,
-                    rgba(7,14,22,0.6) 60%,
-                    rgba(7,14,22,0.9) 75%,
-                    #070e16 90%
-                ),
-                linear-gradient(90deg,
-                    rgba(7,14,22,0.5) 0%,
-                    transparent 40%
-                );
-        }
+      @media (max-width: 768px) {
+        .page-bg,
         .page-bg-gradient {
-            position: absolute;
-            top: -60px;
-            left: -70px;
-            width: calc(100% + 70px);
-            height: 0;
-            padding-bottom: 56.25%;
-            z-index: 1;
-            pointer-events: none;
-            background:
-                linear-gradient(180deg,
-                    transparent 0%,
-                    transparent 35%,
-                    rgba(7,14,22,0.5) 55%,
-                    rgba(7,14,22,0.85) 72%,
-                    #070e16 85%
-                ),
-                linear-gradient(90deg,
-                    rgba(7,14,22,0.55) 0%,
-                    rgba(7,14,22,0.15) 25%,
-                    transparent 45%
-                );
-        }
-        .page-content {
-            position: relative;
-            z-index: 2;
-            padding: 0 24px;
+          left: 0;
+          width: 100%;
         }
         .page-header {
-            display: flex;
-            align-items: flex-start;
-            flex-direction: column;
-            gap: 12px;
-            padding-top: 38vw;
-            padding-bottom: 16px;
-        }
-        .page-header-top {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        .page-header-logo {
-            width: 50px;
-            height: 50px;
-            min-width: 50px;
-            min-height: 50px;
-            max-width: 50px;
-            max-height: 50px;
-            border-radius: 10px;
-            object-fit: contain;
-            background: #fff;
-            padding: 5px;
-            border: 2px solid rgba(255,255,255,0.2);
+          padding-top: 45vw;
         }
         .page-header-title {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #fff;
-            text-shadow: 0 2px 20px rgba(0,0,0,0.5);
-            margin: 0;
+          font-size: 1.5rem;
         }
-        .page-header-desc {
-            color: rgba(255,255,255,0.7);
-            font-size: 0.95rem;
-            margin: 0;
+        .page-header-logo {
+          width: 40px;
+          height: 40px;
+          min-width: 40px;
+          min-height: 40px;
+          max-width: 40px;
+          max-height: 40px;
         }
-        .page-bg-dots {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-            margin-bottom: 10px;
-        }
+      }
 
-        @media (max-width: 768px) {
-            .page-bg, .page-bg-gradient { left: 0; width: 100%; }
-            .page-header { padding-top: 45vw; }
-            .page-header-title { font-size: 1.5rem; }
-            .page-header-logo { width: 40px; height: 40px; min-width: 40px; min-height: 40px; max-width: 40px; max-height: 40px; }
+      /* VIDEO GRID */
+      .video-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+        padding: 0 24px 40px;
+      }
+
+      /* BADGES */
+      .badge-liga {
+        background: #0082e6;
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.7rem;
+      }
+      .badge-canal {
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        font-weight: 500;
+        font-size: 0.7rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .section-title {
+        color: #fff;
+        font-weight: 700;
+        margin-bottom: 16px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #0082e6;
+        display: inline-block;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      .btn-option {
+        border-radius: 20px;
+        font-size: 0.8rem;
+        padding: 4px 14px;
+        border: none;
+        transition: all 0.2s;
+        cursor: pointer;
+      }
+      .btn-option:hover {
+        filter: brightness(1.2);
+      }
+
+      /* HOME MATCH CARDS */
+      .home-match-card {
+        flex: 0 0 220px;
+        background: #0d1b2a;
+        border: 1px solid #112240;
+        border-radius: 12px;
+        padding: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .home-match-card:hover {
+        border-color: #0082e6;
+        transform: translateY(-2px);
+      }
+      .home-match-time {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #0082e6;
+        margin-bottom: 8px;
+      }
+      .home-match-liga {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.7rem;
+        color: #5a7a9a;
+        margin-bottom: 10px;
+      }
+      .home-match-liga img {
+        width: 16px;
+        height: 16px;
+        object-fit: contain;
+      }
+      .home-match-teams {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .home-match-team {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.82rem;
+        color: #e8e8e8;
+      }
+      .home-match-team img {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+        flex-shrink: 0;
+      }
+      .home-match-team span {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .home-match-team strong {
+        color: #fff;
+        font-size: 0.95rem;
+      }
+      .home-match-channels {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+        padding-top: 8px;
+        border-top: 1px solid rgba(17, 34, 64, 0.5);
+      }
+      .home-match-ch {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        background: #fff;
+        overflow: hidden;
+        transition: transform 0.2s;
+      }
+      .home-match-ch:hover {
+        transform: scale(1.15);
+      }
+      .home-match-ch img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        padding: 3px;
+      }
+      .home-match-ch span {
+        font-size: 0.5rem;
+        color: #070e16;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      /* AGENDA */
+      .agenda-days {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 24px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+      }
+      .agenda-days::-webkit-scrollbar {
+        display: none;
+      }
+      .agenda-day {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px 16px;
+        border-radius: 10px;
+        background: #0d1b2a;
+        border: 1px solid #112240;
+        color: #8899aa;
+        text-decoration: none;
+        min-width: 70px;
+        transition: all 0.2s;
+      }
+      .agenda-day:hover {
+        border-color: #0082e6;
+        color: #fff;
+      }
+      .agenda-day.active {
+        background: #0082e6;
+        border-color: #0082e6;
+        color: #fff;
+      }
+      .agenda-day-name {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      .agenda-day-num {
+        font-size: 1.3rem;
+        font-weight: 800;
+      }
+      .agenda-day-month {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+      }
+
+      .agenda-liga {
+        margin-bottom: 24px;
+      }
+      .agenda-liga-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 0;
+        border-bottom: 1px solid #112240;
+        margin-bottom: 4px;
+      }
+      .agenda-liga-logo {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+      }
+      .agenda-liga-nombre {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #fff;
+      }
+
+      .agenda-partido {
+        display: flex;
+        align-items: center;
+        padding: 14px 12px;
+        border-bottom: 1px solid rgba(17, 34, 64, 0.5);
+        transition: background 0.2s;
+        cursor: pointer;
+      }
+      .agenda-partido:hover {
+        background: rgba(0, 130, 230, 0.08);
+      }
+      .agenda-partido.active {
+        background: rgba(0, 130, 230, 0.12);
+        border-left: 3px solid #0082e6;
+      }
+
+      .agenda-hora {
+        width: 60px;
+        flex-shrink: 0;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #8899aa;
+        text-align: center;
+      }
+      .agenda-envivo {
+        color: #e60000;
+        font-size: 0.75rem;
+        font-weight: 700;
+        animation: pulse-live 2s infinite;
+      }
+      .agenda-finalizado {
+        color: #5a7a9a;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .agenda-equipos {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 0;
+      }
+      .agenda-equipo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.9rem;
+        color: #e8e8e8;
+      }
+      .agenda-equipo-logo {
+        width: 22px;
+        height: 22px;
+        object-fit: contain;
+        flex-shrink: 0;
+      }
+      .agenda-gol {
+        color: #fff;
+        margin-left: auto;
+        font-size: 1rem;
+      }
+
+      .agenda-ver {
+        width: 80px;
+        flex-shrink: 0;
+        text-align: right;
+      }
+      .agenda-ver-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(0, 130, 230, 0.15);
+        color: #0082e6;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .agenda-partido:hover .agenda-ver-btn {
+        background: #0082e6;
+        color: #fff;
+      }
+
+      /* PANEL DE CANALES */
+      .agenda-canales-panel {
+        background: #0d1b2a;
+        border: 1px solid #112240;
+        border-radius: 10px;
+        margin: 4px 0 12px 60px;
+        padding: 16px;
+        animation: fadeIn 0.3s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-8px);
         }
-
-        /* VIDEO GRID */
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 16px;
-            padding: 0 24px 40px;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
+      }
 
-        /* BADGES */
-        .badge-liga { background: #0082e6; color: #fff; font-weight: 600; font-size: 0.7rem; }
-        .badge-canal { background: rgba(255,255,255,0.15); color: #fff; font-weight: 500; font-size: 0.7rem; border: 1px solid rgba(255,255,255,0.2); }
-        .section-title { color: #fff; font-weight: 700; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #0082e6; display: inline-block; }
-        a { text-decoration: none; color: inherit; }
-        .btn-option { border-radius: 20px; font-size: 0.8rem; padding: 4px 14px; border: none; transition: all 0.2s; cursor: pointer; }
-        .btn-option:hover { filter: brightness(1.2); }
+      .agenda-canales-titulo {
+        font-size: 0.8rem;
+        color: #5a7a9a;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .agenda-canales-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .agenda-canal-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        background: rgba(0, 130, 230, 0.06);
+        border: 1px solid rgba(0, 130, 230, 0.15);
+        border-radius: 10px;
+        text-decoration: none;
+        color: #e8e8e8;
+        transition: all 0.2s;
+      }
+      .agenda-canal-card:hover {
+        background: rgba(0, 130, 230, 0.15);
+        border-color: #0082e6;
+        transform: translateX(4px);
+      }
+      .agenda-canal-logo-wrap {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        overflow: hidden;
+      }
+      .agenda-canal-logo-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        padding: 4px;
+      }
+      .agenda-canal-logo-wrap i {
+        color: #0082e6;
+        font-size: 1.2rem;
+      }
+      .agenda-canal-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .agenda-canal-nombre {
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+      .agenda-canal-sub {
+        font-size: 0.75rem;
+        color: #5a7a9a;
+      }
+      .agenda-canal-arrow {
+        color: #5a7a9a;
+        transition: color 0.2s;
+      }
+      .agenda-canal-card:hover .agenda-canal-arrow {
+        color: #0082e6;
+      }
 
-
-        /* AGENDA */
-       /* AGENDA */
-        .agenda-days {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 24px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-        }
-        .agenda-days::-webkit-scrollbar { display: none; }
-        .agenda-day {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 10px 16px;
-            border-radius: 10px;
-            background: #0d1b2a;
-            border: 1px solid #112240;
-            color: #8899aa;
-            text-decoration: none;
-            min-width: 70px;
-            transition: all 0.2s;
-        }
-        .agenda-day:hover { border-color: #0082e6; color: #fff; }
-        .agenda-day.active { background: #0082e6; border-color: #0082e6; color: #fff; }
-        .agenda-day-name { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
-        .agenda-day-num { font-size: 1.3rem; font-weight: 800; }
-        .agenda-day-month { font-size: 0.7rem; text-transform: uppercase; }
-
-        .agenda-liga { margin-bottom: 24px; }
-        .agenda-liga-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 0;
-            border-bottom: 1px solid #112240;
-            margin-bottom: 4px;
-        }
-        .agenda-liga-logo { width: 24px; height: 24px; object-fit: contain; }
-        .agenda-liga-nombre { margin: 0; font-size: 1rem; font-weight: 700; color: #fff; }
-
+      @media (max-width: 768px) {
         .agenda-partido {
-            display: flex;
-            align-items: center;
-            padding: 14px 12px;
-            border-bottom: 1px solid rgba(17,34,64,0.5);
-            transition: background 0.2s;
-            cursor: pointer;
+          flex-wrap: wrap;
+          gap: 8px;
         }
-        .agenda-partido:hover { background: rgba(0,130,230,0.08); }
-        .agenda-partido.active { background: rgba(0,130,230,0.12); border-left: 3px solid #0082e6; }
-
         .agenda-hora {
-            width: 60px;
-            flex-shrink: 0;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #8899aa;
-            text-align: center;
+          width: 50px;
         }
-        .agenda-envivo {
-            color: #e60000;
-            font-size: 0.75rem;
-            font-weight: 700;
-            animation: pulse-live 2s infinite;
-        }
-        .agenda-finalizado { color: #5a7a9a; font-size: 0.8rem; font-weight: 600; }
-
-        .agenda-equipos {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            min-width: 0;
-        }
-        .agenda-equipo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.9rem;
-            color: #e8e8e8;
-        }
-        .agenda-equipo-logo { width: 22px; height: 22px; object-fit: contain; flex-shrink: 0; }
-        .agenda-gol { color: #fff; margin-left: auto; font-size: 1rem; }
-
         .agenda-ver {
-            width: 80px;
-            flex-shrink: 0;
-            text-align: right;
+          width: 60px;
         }
         .agenda-ver-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: rgba(0,130,230,0.15);
-            color: #0082e6;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            transition: all 0.2s;
+          padding: 4px 8px;
+          font-size: 0.75rem;
         }
-        .agenda-partido:hover .agenda-ver-btn { background: #0082e6; color: #fff; }
-
-        /* PANEL DE CANALES */
         .agenda-canales-panel {
-            background: #0d1b2a;
-            border: 1px solid #112240;
-            border-radius: 10px;
-            margin: 4px 0 12px 60px;
-            padding: 16px;
-            animation: fadeIn 0.3s ease;
+          margin-left: 0;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+      }
 
-        .agenda-canales-titulo {
-            font-size: 0.8rem;
-            color: #5a7a9a;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .agenda-canales-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .agenda-canal-card {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            background: rgba(0,130,230,0.06);
-            border: 1px solid rgba(0,130,230,0.15);
-            border-radius: 10px;
-            text-decoration: none;
-            color: #e8e8e8;
-            transition: all 0.2s;
-        }
-        .agenda-canal-card:hover {
-            background: rgba(0,130,230,0.15);
-            border-color: #0082e6;
-            transform: translateX(4px);
-        }
-        .agenda-canal-logo-wrap {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-        .agenda-canal-logo-wrap img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            padding: 4px;
-        }
-        .agenda-canal-logo-wrap i { color: #0082e6; font-size: 1.2rem; }
-        .agenda-canal-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .agenda-canal-nombre { font-size: 0.9rem; font-weight: 600; }
-        .agenda-canal-sub { font-size: 0.75rem; color: #5a7a9a; }
-        .agenda-canal-arrow { color: #5a7a9a; transition: color 0.2s; }
-        .agenda-canal-card:hover .agenda-canal-arrow { color: #0082e6; }
+      /* =================================================MA
+   MUNDIAL FIFA 2026 - IDENTITY SYSTEM
+   ================================================== */
 
-        @media (max-width: 768px) {
-            .agenda-partido { flex-wrap: wrap; gap: 8px; }
-            .agenda-hora { width: 50px; }
-            .agenda-ver { width: 60px; }
-            .agenda-ver-btn { padding: 4px 8px; font-size: 0.75rem; }
-            .agenda-canales-panel { margin-left: 0; }
-        }
+      .mundial-page {
+        /* Paleta Oficial United 2026 */
+        --primary: #3cac3b; /* Average Green (México / Campo) */
+        --secondary: #2a398d; /* Hermes Blue (USA / Marca) */
+        --accent: #e61d25; /* Torch Red (Canadá / Energía) */
+        --accent2: #d4af37; /* Gold (Trofeo FIFA) */
+        --bg-dark: #070e16; /* Deep Navy (Fondo Oficial) */
+        --text-dim: rgba(255, 255, 255, 0.6);
+      }
 
-        /* SCROLLBAR */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #070e16; }
-        ::-webkit-scrollbar-thumb { background: #112240; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #0082e6; }
+      .mundial-hero {
+        position: relative;
+        height: 460px;
+        overflow: hidden;
+        display: flex;
+        align-items: flex-end;
+        background: var(--bg-dark);
+      }
 
-        /* MOBILE */
-        @media (max-width: 768px) {
-            .sidebar { width: 0; }
-            .sidebar.expanded { width: 240px; }
-            .main-content { margin-left: 0; }
-            .main-content.shifted { margin-left: 0; }
-            .hero-slider { height: 280px; }
-            .hero-slider-page { height: 240px; }
-            .slide-content { bottom: 60px; left: 16px; max-width: 70%; }
-            .slide-title { font-size: 1.3rem; }
-            .slide-desc { font-size: 0.8rem; -webkit-line-clamp: 2; }
-            .slide-logo { width: 36px; height: 36px; }
-            .slide-btn { padding: 8px 20px; font-size: 0.8rem; }
-            .slider-arrow { width: 34px; height: 34px; font-size: 1rem; }
-            .slider-dots { left: 16px; bottom: 16px; }
-            .slide-fallback .hero-title { font-size: 2rem; }
-            .slide-fallback { padding: 0 20px; }
-            .channel-section { padding: 0 12px; }
-            .carousel-card { flex: 0 0 160px; }
-            .channel-banner { height: 150px; }
-            .channel-banner-content { padding: 0 16px; }
-            .banner-logo { width: 56px; height: 56px; }
-            .banner-title { font-size: 1.4rem; }
-            .video-grid { padding: 0 12px 30px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-            .mobile-overlay {
-                position: fixed;
-                top: 60px; left: 0; right: 0; bottom: 0;
-                background: rgba(0,0,0,0.7);
-                z-index: 1035;
-                display: none;
-            }
-            .mobile-overlay.active { display: block; }
+      .mundial-hero-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #0a0a0a;
+      }
+
+      .mundial-hero-pattern::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        /* Gradientes basados en las 3 naciones anfitrionas */
+        background:
+          radial-gradient(
+            ellipse 300px 300px at 15% 25%,
+            rgba(60, 172, 59, 0.25) 0%,
+            /* Verde México */ transparent 70%
+          ),
+          radial-gradient(
+            ellipse 250px 250px at 80% 20%,
+            rgba(230, 29, 37, 0.2) 0%,
+            /* Rojo Canadá */ transparent 70%
+          ),
+          radial-gradient(
+            ellipse 200px 200px at 50% 75%,
+            rgba(42, 57, 141, 0.3) 0%,
+            /* Azul EE.UU. */ transparent 70%
+          ),
+          radial-gradient(
+            ellipse 280px 280px at 65% 55%,
+            rgba(212, 175, 55, 0.1) 0%,
+            /* Brillo del Trofeo */ transparent 70%
+          );
+        animation: mundialFloat 15s ease-in-out infinite alternate;
+      }
+
+      @keyframes mundialFloat {
+        0% {
+          transform: translate(0, 0) rotate(0deg);
         }
+        100% {
+          transform: translate(-2%, 1%) rotate(1deg);
+        }
+      }
+
+      .mundial-hero-pattern::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        /* Patrón geométrico sutil (Marca United) */
+        background:
+          url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 60 C20 20 40 0 60 0 C80 0 100 20 120 60 C100 100 80 120 60 120 C40 120 20 100 0 60Z' fill='rgba(60,172,59,0.03)'/%3E%3C/svg%3E"),
+          url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='rgba(230,29,37,0.04)' stroke-width='1'/%3E%3C/svg%3E");
+      }
+
+      .mundial-hero-gradient {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+          linear-gradient(
+            0deg,
+            var(--bg-dark) 0%,
+            rgba(7, 14, 22, 0.7) 50%,
+            transparent 100%
+          ),
+          linear-gradient(90deg, rgba(7, 14, 22, 0.6) 0%, transparent 60%);
+      }
+
+      .mundial-hero-content {
+        position: relative;
+        z-index: 2;
+        padding: 0 32px 48px;
+      }
+
+      .mundial-hero-badge {
+        display: inline-block;
+        padding: 6px 18px;
+        background: linear-gradient(
+          90deg,
+          rgba(60, 172, 59, 0.2),
+          rgba(42, 57, 141, 0.2)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 30px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 2px;
+        color: #fff;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        backdrop-filter: blur(8px);
+      }
+
+      .mundial-26 {
+        font-size: 7.5rem;
+        font-weight: 900;
+        display: block;
+        line-height: 0.85;
+      }
+
+      .mundial-26-char {
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--secondary),
+          var(--accent),
+          var(--accent2)
+        );
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: mundialText 6s ease infinite;
+      }
+
+      @keyframes mundialText {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      .mundial-subtitle {
+        font-size: 1.2rem;
+        font-weight: 700;
+        letter-spacing: 6px;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        margin-top: 8px;
+      }
+
+      /* SECCIONES */
+      .mundial-section-title {
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 20px;
+        padding-bottom: 8px;
+        border-bottom: 3px solid;
+        /* El borde usa los colores nacionales */
+        border-image: linear-gradient(90deg, #006847, #ff0000, #002868) 1;
+        display: inline-block;
+        text-transform: uppercase;
+      }
+
+      /* TARJETAS DE CANALES Y GRUPOS */
+      .mundial-canal-group,
+      .mundial-grupo {
+        background: rgba(13, 27, 42, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .mundial-canal-group:hover {
+        border-color: var(--primary);
+        background: rgba(13, 27, 42, 0.9);
+        transform: translateY(-2px);
+      }
+
+      .mundial-partido-hora {
+        color: var(--primary);
+        font-weight: 800;
+      }
+
+      .mundial-tag:nth-child(1) {
+        background: rgba(60, 172, 59, 0.15);
+        border: 1px solid rgba(60, 172, 59, 0.3);
+      }
+      .mundial-tag:nth-child(2) {
+        background: rgba(42, 57, 141, 0.15);
+        border: 1px solid rgba(42, 57, 141, 0.3);
+      }
+      .mundial-tag:nth-child(3) {
+        background: rgba(230, 29, 37, 0.15);
+        border: 1px solid rgba(230, 29, 37, 0.3);
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 768px) {
+        .mundial-26 {
+          font-size: 4.8rem;
+        }
+        .mundial-hero {
+          height: 380px;
+        }
+        .mundial-hero-content {
+          padding: 0 20px 32px;
+        }
+      } /* =================================================
+     MEJORAS DISEÑO DE GRUPOS - MUNDIAL 2026
+     ================================================= */
+
+      /* Contenedor principal de grupos */
+      .mundial-grupos-grid {
+        display: grid;
+        grid-template-columns: repeat(
+          auto-fill,
+          minmax(220px, 1fr)
+        ); /* Tarjetas un poco más anchas */
+        gap: 20px; /* Más espacio entre tarjetas */
+        margin-top: 20px;
+      }
+
+      /* Estilo base de tarjeta de grupo (Mejorado) */
+      .mundial-grupo {
+        padding: 18px;
+        border-radius: 18px; /* Bordes más redondeados */
+        background: rgba(13, 27, 42, 0.4); /* Glassmorphism sutil */
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.05); /* Borde inicial */
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Transición suave */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra suave */
+      }
+
+      /* Efecto Hover Base: Resaltar ligeramente */
+      .mundial-grupo:hover {
+        transform: translateY(-5px) scale(1.02); /* Levantar y agrandar sutilmente */
+        background: rgba(13, 27, 42, 0.6); /* Oscurecer fondo al hover */
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); /* Sombra más pronunciada */
+      }
+
+      /* Cabecera del Grupo: Tipografía más fuerte */
+      .mundial-grupo-header {
+        font-weight: 900;
+        text-transform: uppercase;
+        font-size: 1rem;
+        letter-spacing: 1.5px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        color: #fff; /* Color por defecto */
+      }
+
+      /* Estilo de Equipo: Más espaciado */
+      .mundial-grupo-equipo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 0;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.85);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03); /* Separador sutil */
+      }
+
+      .mundial-grupo-equipo:last-child {
+        border-bottom: none; /* Eliminar separador en el último equipo */
+      }
+
+      /* Icono de Bandera/Emoji: Un poco más grande */
+      .mundial-bandera {
+        font-size: 1.4rem;
+      }
+
+      /* =================================================
+     COLORES TEMÁTICOS POR SEDE (United 2026)
+     ================================================= */
+
+      /* SEDE: MÉXICO (Verde) */
+      .sede-mexico {
+        border-color: rgba(60, 172, 59, 0.2); /* Borde sutil */
+      }
+      .sede-mexico .mundial-grupo-header {
+        color: #3cac3b; /* Average Green - México */
+      }
+      .sede-mexico:hover {
+        border-color: rgba(60, 172, 59, 0.5); /* Borde más intenso al hover */
+        box-shadow: 0 10px 30px rgba(60, 172, 59, 0.2); /* Sombra verde */
+      }
+
+      /* SEDE: CANADÁ (Rojo) */
+      .sede-canada {
+        border-color: rgba(230, 29, 37, 0.2); /* Borde sutil */
+      }
+      .sede-canada .mundial-grupo-header {
+        color: #e61d25; /* Torch Red - Canadá */
+      }
+      .sede-canada:hover {
+        border-color: rgba(230, 29, 37, 0.5);
+        box-shadow: 0 10px 30px rgba(230, 29, 37, 0.2); /* Sombra roja */
+      }
+
+      /* SEDE: ESTADOS UNIDOS (Azul) */
+      .sede-usa {
+        border-color: rgba(42, 57, 141, 0.2); /* Borde sutil */
+      }
+      .sede-usa .mundial-grupo-header {
+        color: #2a398d; /* Hermes Blue - USA */
+      }
+      .sede-usa:hover {
+        border-color: rgba(42, 57, 141, 0.5);
+        box-shadow: 0 10px 30px rgba(42, 57, 141, 0.2); /* Sombra azul */
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 768px) {
+        .mundial-26 {
+          font-size: 4.8rem;
+        }
+        .mundial-hero {
+          height: 380px;
+        }
+        .mundial-hero-content {
+          padding: 0 20px 32px;
+        }
+      }
+
+      /* SCROLLBAR */
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #070e16;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #112240;
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #0082e6;
+      }
+
+      /* MOBILE */
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 0;
+        }
+        .sidebar.expanded {
+          width: 240px;
+        }
+        .main-content {
+          margin-left: 0;
+        }
+        .main-content.shifted {
+          margin-left: 0;
+        }
+        .hero-slider {
+          height: 280px;
+        }
+        .hero-slider-page {
+          height: 240px;
+        }
+        .slide-content {
+          bottom: 60px;
+          left: 16px;
+          max-width: 70%;
+        }
+        .slide-title {
+          font-size: 1.3rem;
+        }
+        .slide-desc {
+          font-size: 0.8rem;
+          -webkit-line-clamp: 2;
+        }
+        .slide-logo {
+          width: 36px;
+          height: 36px;
+        }
+        .slide-btn {
+          padding: 8px 20px;
+          font-size: 0.8rem;
+        }
+        .slider-arrow {
+          width: 34px;
+          height: 34px;
+          font-size: 1rem;
+        }
+        .slider-dots {
+          left: 16px;
+          bottom: 16px;
+        }
+        .slide-fallback .hero-title {
+          font-size: 2rem;
+        }
+        .slide-fallback {
+          padding: 0 20px;
+        }
+        .channel-section {
+          padding: 0 12px;
+        }
+        .carousel-card {
+          flex: 0 0 160px;
+        }
+        .channel-banner {
+          height: 150px;
+        }
+        .channel-banner-content {
+          padding: 0 16px;
+        }
+        .banner-logo {
+          width: 56px;
+          height: 56px;
+        }
+        .banner-title {
+          font-size: 1.4rem;
+        }
+        .video-grid {
+          padding: 0 12px 30px;
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+        .mobile-overlay {
+          position: fixed;
+          top: 60px;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.7);
+          z-index: 1035;
+          display: none;
+        }
+        .mobile-overlay.active {
+          display: block;
+        }
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <!-- NAVBAR -->
     <nav class="navbar navbar-custom fixed-top px-3">
-        <div class="d-flex align-items-center gap-3">
-            <i class="bi bi-list" style="font-size: 1.5rem; cursor: pointer; color: #8899aa;" onclick="toggleSidebar()"></i>
-            <a class="navbar-brand mb-0" href="{% url 'canales:home' %}">
-                <i class="bi bi-trophy-fill"></i> FutbolTube
-            </a>
-        </div>
-        <div>
-            <a href="{% url 'canales:home' %}" class="nav-link d-inline">
-                <i class="bi bi-house-fill"></i> <span class="d-none d-md-inline">Inicio</span>
-            </a>
-            <a href="{% url 'canales:agenda' %}" class="nav-link d-inline ms-3">
-                <i class="bi bi-calendar-event"></i> <span class="d-none d-md-inline">Agenda</span>
-            </a>
-        </div>
+      <div class="d-flex align-items-center gap-3">
+        <i
+          class="bi bi-list"
+          style="font-size: 1.5rem; cursor: pointer; color: #8899aa"
+          onclick="toggleSidebar()"
+        ></i>
+        <a class="navbar-brand mb-0" href="{% url 'canales:home' %}">
+          <i class="bi bi-trophy-fill"></i> FutbolTube
+        </a>
+      </div>
+      <div>
+        <a href="{% url 'canales:home' %}" class="nav-link d-inline">
+          <i class="bi bi-house-fill"></i>
+          <span class="d-none d-md-inline">Inicio</span>
+        </a>
+        <a href="{% url 'canales:agenda' %}" class="nav-link d-inline ms-3">
+          <i class="bi bi-calendar-event"></i>
+          <span class="d-none d-md-inline">Agenda</span>
+        </a>
+        {% now "Y-m-d" as hoy %} {% if hoy >= "2026-05-21" %}
+        <a
+          href="{% url 'canales:mundial' %}"
+          class="nav-link d-inline ms-3"
+          style="color: #3cac3b !important"
+        >
+          <i class="bi bi-globe-americas"></i>
+          <span class="d-none d-md-inline">Mundial</span>
+        </a>
+        {% endif %}
+      </div>
     </nav>
 
     <!-- MOBILE OVERLAY -->
-    <div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
+    <div
+      class="mobile-overlay"
+      id="mobileOverlay"
+      onclick="toggleSidebar()"
+    ></div>
 
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
-        <div class="sidebar-section-title"><i class="bi bi-broadcast"></i> Canales</div>
-        {% for canal in canales_sidebar %}
-        <a href="{% url 'canales:canal' canal.slug %}" class="sidebar-item">
-            {% if canal.logo %}
-            <img src="{{ canal.logo.url }}" alt="{{ canal.nombre }}">
-            {% else %}
-            <span class="icon-placeholder"><i class="bi bi-tv"></i></span>
-            {% endif %}
-            <span class="sidebar-text">{{ canal.nombre }}</span>
-        </a>
-        {% endfor %}
+      <div class="sidebar-section-title">
+        <i class="bi bi-broadcast"></i> Canales
+      </div>
+      {% for canal in canales_sidebar %}
+      <a href="{% url 'canales:canal' canal.slug %}" class="sidebar-item">
+        {% if canal.logo %}
+        <img src="{{ canal.logo.url }}" alt="{{ canal.nombre }}" />
+        {% else %}
+        <span class="icon-placeholder"><i class="bi bi-tv"></i></span>
+        {% endif %}
+        <span class="sidebar-text">{{ canal.nombre }}</span>
+      </a>
+      {% endfor %}
 
-        <div class="sidebar-section-title"><i class="bi bi-trophy"></i> Ligas</div>
-        {% for liga in ligas_sidebar %}
-        <a href="{% url 'canales:liga' liga.slug %}" class="sidebar-item">
-            {% if liga.logo %}
-            <img src="{{ liga.logo.url }}" alt="{{ liga.nombre }}">
-            {% else %}
-            <span class="icon-placeholder"><i class="bi bi-shield-fill"></i></span>
-            {% endif %}
-            <span class="sidebar-text">{{ liga.nombre }}</span>
-        </a>
-        {% endfor %}
+      <div class="sidebar-section-title">
+        <i class="bi bi-trophy"></i> Ligas
+      </div>
+      {% for liga in ligas_sidebar %}
+      <a href="{% url 'canales:liga' liga.slug %}" class="sidebar-item">
+        {% if liga.logo %}
+        <img src="{{ liga.logo.url }}" alt="{{ liga.nombre }}" />
+        {% else %}
+        <span class="icon-placeholder"><i class="bi bi-shield-fill"></i></span>
+        {% endif %}
+        <span class="sidebar-text">{{ liga.nombre }}</span>
+      </a>
+      {% endfor %}
     </aside>
 
     <!-- MAIN CONTENT -->
     <main class="main-content" id="mainContent">
-        {% block contenido %}{% endblock %}
+      {% block contenido %}{% endblock %}
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let sidebarOpen = false;
-        function toggleSidebar() {
-            sidebarOpen = !sidebarOpen;
-            document.getElementById('sidebar').classList.toggle('expanded', sidebarOpen);
-            document.getElementById('mainContent').classList.toggle('shifted', sidebarOpen);
-            document.getElementById('mobileOverlay').classList.toggle('active', sidebarOpen);
-        }
+      let sidebarOpen = false;
+      function toggleSidebar() {
+        sidebarOpen = !sidebarOpen;
+        document
+          .getElementById("sidebar")
+          .classList.toggle("expanded", sidebarOpen);
+        document
+          .getElementById("mainContent")
+          .classList.toggle("shifted", sidebarOpen);
+        document
+          .getElementById("mobileOverlay")
+          .classList.toggle("active", sidebarOpen);
+      }
     </script>
-</body>
+  </body>
 </html>

@@ -9,4 +9,5 @@ urlpatterns = [
     path('canal/<slug:slug>/', views.lista_canal, name='canal'),
     path('liga/<slug:slug>/', views.lista_liga, name='liga'),
     path('agenda/', views.agenda, name='agenda'),
+    path('mundial/', views.mundial, name='mundial'),
 ]
