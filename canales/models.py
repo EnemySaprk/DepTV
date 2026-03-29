@@ -300,57 +300,47 @@ class Partido(models.Model):
 
     @property
     def canales_transmision(self):
-        """
-        Retorna SIEMPRE un QuerySet de Video con los canales que transmiten
-        este partido. Nunca retorna una lista (evita errores con .all() en templates).
-
-        Prioridad:
-          1. Videos vinculados por bolaloca_canal__numero
-          2. Videos vinculados por tvtvhd_id
-          3. MapeoLigaCanal para la liga del partido
-          4. QuerySet vacío
-        """
         from canales.models import Video, MapeoLigaCanal
 
         pks = set()
 
         if self.canales_bolaloca:
-            numeros = [
-                int(n.strip())
-                for n in self.canales_bolaloca.split(',')
-                if n.strip().isdigit()
-            ]
+            valores = [v.strip() for v in self.canales_bolaloca.split(',') if v.strip()]
 
-            # 1) Por bolaloca_canal
-            pks.update(
-                Video.objects
-                .filter(activo=True, bolaloca_canal__numero__in=numeros)
-                .values_list('pk', flat=True)
-            )
-
-            # 2) Por tvtvhd_id
-            tvtvhd_ids = [self._MAPEO_TVTVHD[n] for n in numeros if n in self._MAPEO_TVTVHD]
-            if tvtvhd_ids:
+            # Verificar si son numeros (bolaloca viejo) o titulos (rusticotv nuevo)
+            if valores and valores[0].isdigit():
+                # Formato viejo: numeros de canal bolaloca
+                numeros = [int(n) for n in valores if n.isdigit()]
                 pks.update(
-                    Video.objects
-                    .filter(activo=True, tvtvhd_id__in=tvtvhd_ids)
+                    Video.objects.filter(activo=True, bolaloca_canal__numero__in=numeros)
+                    .values_list('pk', flat=True)
+                )
+                tvtvhd_ids = [self._MAPEO_TVTVHD[n] for n in numeros if n in self._MAPEO_TVTVHD]
+                if tvtvhd_ids:
+                    pks.update(
+                        Video.objects.filter(activo=True, tvtvhd_id__in=tvtvhd_ids)
+                        .values_list('pk', flat=True)
+                    )
+            else:
+                # Formato nuevo: titulos de video
+                pks.update(
+                    Video.objects.filter(activo=True, titulo__in=valores)
                     .values_list('pk', flat=True)
                 )
 
         if pks:
             return (
-                Video.objects
-                .filter(pk__in=pks, activo=True)
+                Video.objects.filter(pk__in=pks, activo=True)
                 .select_related('canal')
                 .order_by('canal__nombre', 'titulo')
             )
 
-        # 3) Fallback: MapeoLigaCanal
+        # Fallback: MapeoLigaCanal
         try:
             mapeo = MapeoLigaCanal.objects.get(liga_api_id=self.liga_api_id, activo=True)
             return mapeo.canales.filter(activo=True).select_related('canal')
         except MapeoLigaCanal.DoesNotExist:
-            return Video.objects.none()  # ← siempre QuerySet, nunca lista
+            return Video.objects.none()
 
 
 class EventoBolaloca(models.Model):
