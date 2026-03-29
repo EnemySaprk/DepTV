@@ -90,6 +90,7 @@ class Command(BaseCommand):
 
         try:
             response = requests.get('https://rusticotv.cc/agenda.html', headers=headers, timeout=15)
+            response.encoding = 'utf-8'
             if response.status_code != 200:
                 self.stdout.write(self.style.ERROR(f'  Error HTTP: {response.status_code}'))
                 return agenda
@@ -215,7 +216,9 @@ class Command(BaseCommand):
             if not es_extra:
                 continue
 
-            api_id = abs(hash(f'{evento["fecha"]}_{evento["local"]}_{evento["visitante"]}')) % 2147483647
+            # ID determinístico basado en fecha + equipos
+            id_str = f'{evento["fecha"]}_{evento["local"]}_{evento["visitante"]}'
+            api_id = int.from_bytes(id_str.encode('utf-8')[:8], 'big') % 2147483647
             canales_str = ','.join(evento['canales_mapeados']) if evento['canales_mapeados'] else ''
 
             partido, created = Partido.objects.update_or_create(
