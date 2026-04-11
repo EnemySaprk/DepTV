@@ -187,8 +187,24 @@
                     <div class="thumb-placeholder"><i class="bi bi-play-btn-fill"></i></div>
                     {% endif %}
                     <div class="card-overlay"><i class="bi bi-play-circle-fill play-icon"></i></div>
-                    {% if video.destacado %}
+                    {% if video.partido_ahora %}
+                        {% if video.partido_ahora.estado in 'ESTADOS_VIVO' %}
+                        <span class="live-badge"><i class="bi bi-broadcast"></i> EN VIVO</span>
+                        {% endif %}
+                    {% elif video.destacado %}
                     <span class="live-badge"><i class="bi bi-broadcast"></i> EN VIVO</span>
+                    {% endif %}
+                    {% if video.partido_ahora %}
+                    <div class="card-now-playing">
+                        {% with p=video.partido_ahora %}
+                        {% if p.estado in 'ESTADOS_VIVO' %}
+                        <span class="cnp-badge cnp-live"><span class="cp-pulse"></span>VIVO</span>
+                        {% else %}
+                        <span class="cnp-badge cnp-next">{{ p.hora|time:"H:i" }}</span>
+                        {% endif %}
+                        <span class="cnp-match">{{ p.equipo_local|truncatechars:12 }} vs {{ p.equipo_visitante|truncatechars:12 }}</span>
+                        {% endwith %}
+                    </div>
                     {% endif %}
                 </div>
                 <div class="card-info"><p class="card-title-text">{{ video.titulo }}</p></div>
@@ -226,6 +242,18 @@
                     <div class="thumb-placeholder"><i class="bi bi-play-btn-fill"></i></div>
                     {% endif %}
                     <div class="card-overlay"><i class="bi bi-play-circle-fill play-icon"></i></div>
+                    {% if video.partido_ahora %}
+                    <div class="card-now-playing">
+                        {% with p=video.partido_ahora %}
+                        {% if p.estado in 'ESTADOS_VIVO' %}
+                        <span class="cnp-badge cnp-live"><span class="cp-pulse"></span>VIVO</span>
+                        {% else %}
+                        <span class="cnp-badge cnp-next">{{ p.hora|time:"H:i" }}</span>
+                        {% endif %}
+                        <span class="cnp-match">{{ p.equipo_local|truncatechars:12 }} vs {{ p.equipo_visitante|truncatechars:12 }}</span>
+                        {% endwith %}
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="card-info">
                     <p class="card-title-text">{{ video.titulo }}</p>

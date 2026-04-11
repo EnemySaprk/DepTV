@@ -3,7 +3,7 @@
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 
-from .models import Liga, Canal, Video, BannerImagen, Partido
+from .models import Liga, Canal, Video, BannerImagen, Partido, MapeoLigaCanal
 
 
 # ──────────────────────────────────────────────────────────────
@@ -12,36 +12,90 @@ from .models import Liga, Canal, Video, BannerImagen, Partido
 ESTADOS_VIVO = {'1H', '2H', 'HT', 'ET', 'P', 'LIVE'}
 
 
+def _build_video_partido_map(partidos):
+    """
+    Devuelve {video_id: partido} con el partido más relevante por canal.
+    Prioridad: en vivo > próximo. Usa 3-4 queries en total.
+    """
+    if not partidos:
+        return {}
+
+    # Lookup: bolaloca número → video_id
+    num_a_vid = {}
+    titulo_a_vid = {}
+    for v in Video.objects.filter(activo=True).select_related('bolaloca_canal'):
+        titulo_a_vid[v.titulo] = v.id
+        if v.bolaloca_canal_id:
+            num_a_vid[v.bolaloca_canal.numero] = v.id
+
+    # Lookup: liga_api_id → set de video_ids (vía MapeoLigaCanal)
+    liga_a_vids = {}
+    for mapa in MapeoLigaCanal.objects.filter(activo=True).prefetch_related('canales'):
+        ids = set(mapa.canales.values_list('id', flat=True))
+        liga_a_vids[mapa.liga_api_id] = ids
+
+    video_partido = {}
+
+    def _asignar(vid_id, partido):
+        existing = video_partido.get(vid_id)
+        if existing is None:
+            video_partido[vid_id] = partido
+        elif partido.estado in ESTADOS_VIVO and existing.estado not in ESTADOS_VIVO:
+            video_partido[vid_id] = partido
+
+    for partido in partidos:
+        matched = set()
+        if partido.canales_bolaloca:
+            valores = [v.strip() for v in partido.canales_bolaloca.split(',') if v.strip()]
+            if valores and valores[0].isdigit():
+                for n in valores:
+                    if n.isdigit() and int(n) in num_a_vid:
+                        matched.add(num_a_vid[int(n)])
+            else:
+                for titulo in valores:
+                    if titulo in titulo_a_vid:
+                        matched.add(titulo_a_vid[titulo])
+        if partido.liga_api_id in liga_a_vids:
+            matched.update(liga_a_vids[partido.liga_api_id])
+        for vid_id in matched:
+            _asignar(vid_id, partido)
+
+    return video_partido
+
+
 def home(request):
     banners = BannerImagen.objects.filter(activo=True, canal__isnull=True, liga__isnull=True)
     if not banners.exists():
         banners = BannerImagen.objects.filter(activo=True)[:5]
 
+    hoy = date.today()
+    partidos_hoy = list(Partido.objects.filter(fecha=hoy).order_by('hora')[:20])
+    partidos_vivo = [p for p in partidos_hoy if p.estado in ESTADOS_VIVO]
+
+    # Mapa video_id → partido más relevante del día
+    video_partido = _build_video_partido_map(partidos_hoy)
+
+    def _anotar(videos):
+        videos = list(videos)
+        for v in videos:
+            v.partido_ahora = video_partido.get(v.id)
+        return videos
+
     canales_con_videos = []
     for canal in Canal.objects.filter(activo=True):
-        videos = (
-            Video.objects
-            .filter(canal=canal, activo=True)
-            .select_related('canal')
-            .prefetch_related('ligas')
+        videos = _anotar(
+            Video.objects.filter(canal=canal, activo=True).select_related('canal', 'bolaloca_canal').prefetch_related('ligas')
         )
-        if videos.exists():
+        if videos:
             canales_con_videos.append({'canal': canal, 'videos': videos})
 
     ligas_con_videos = []
     for liga in Liga.objects.filter(activa=True):
-        videos = (
-            Video.objects
-            .filter(ligas=liga, activo=True)
-            .select_related('canal')
-            .prefetch_related('ligas')
-            .distinct()
+        videos = _anotar(
+            Video.objects.filter(ligas=liga, activo=True).select_related('canal', 'bolaloca_canal').prefetch_related('ligas').distinct()
         )
-        if videos.exists():
+        if videos:
             ligas_con_videos.append({'liga': liga, 'videos': videos})
-
-    partidos_hoy = list(Partido.objects.filter(fecha=date.today()).order_by('hora')[:20])
-    partidos_vivo = [p for p in partidos_hoy if p.estado in ESTADOS_VIVO]
 
     context = {
         'banners': banners,

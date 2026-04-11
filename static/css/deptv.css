@@ -335,6 +335,35 @@ body {
   text-transform: uppercase !important;
 }
 
+/* ─── NOW PLAYING en tarjeta de canal ───────────────────────── */
+.card-now-playing {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 8px;
+  background: linear-gradient(0deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0) 100%);
+  z-index: 4;
+}
+.cnp-badge {
+  flex-shrink: 0;
+  font-size: 0.6rem; font-weight: 800; letter-spacing: 0.04em;
+  padding: 2px 6px; border-radius: 4px;
+  display: inline-flex; align-items: center; gap: 3px;
+}
+.cnp-live {
+  background: var(--red);
+  color: #fff;
+}
+.cnp-live .cp-pulse { width: 5px; height: 5px; margin-right: 0; }
+.cnp-next {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+}
+.cnp-match {
+  font-size: 0.65rem; font-weight: 600; color: rgba(255,255,255,0.9);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
 .card-info { padding: 9px 2px !important; }
 .card-title-text {
   font-size: 0.82rem !important;
