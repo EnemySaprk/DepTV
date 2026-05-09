@@ -1,10 +1,18 @@
 ﻿from django.contrib import admin
-from .models import Liga, Canal, Video, EnlaceVideo, CanalBolaloca, EventoBolaloca, ConfigStreaming, BannerImagen, MapeoLigaCanal, Partido
+from .models import Liga, RedCanal, Canal, Video, EnlaceVideo, CanalBolaloca, EventoBolaloca, ConfigStreaming, BannerImagen, MapeoLigaCanal, Partido
 
 
 class EnlaceVideoInline(admin.TabularInline):
     model = EnlaceVideo
     extra = 1
+
+
+class CanalInline(admin.TabularInline):
+    model = Canal
+    fields = ['nombre', 'slug', 'activo']
+    prepopulated_fields = {'slug': ('nombre',)}
+    extra = 1
+    show_change_link = True
 
 
 @admin.register(Liga)
@@ -14,23 +22,46 @@ class LigaAdmin(admin.ModelAdmin):
     list_filter = ['activa', 'pais']
 
 
+@admin.register(RedCanal)
+class RedCanalAdmin(admin.ModelAdmin):
+    list_display = ['nombre', 'num_canales', 'activa']
+    prepopulated_fields = {'slug': ('nombre',)}
+    list_filter = ['activa']
+    search_fields = ['nombre']
+    inlines = [CanalInline]
+
+    @admin.display(description='# Canales')
+    def num_canales(self, obj):
+        return obj.canales.count()
+
+
 @admin.register(Canal)
 class CanalAdmin(admin.ModelAdmin):
-    list_display = ['nombre', 'url_sitio', 'activo', 'fecha_creacion']
+    list_display = ['nombre', 'red', 'ligas_display', 'url_sitio', 'activo', 'fecha_creacion']
     prepopulated_fields = {'slug': ('nombre',)}
-    list_filter = ['activo']
+    list_filter = ['activo', 'red', 'ligas']
     search_fields = ['nombre']
+    filter_horizontal = ['ligas']
+
+    @admin.display(description='Competiciones')
+    def ligas_display(self, obj):
+        nombres = list(obj.ligas.values_list('nombre', flat=True))
+        return ', '.join(nombres) if nombres else '—'
 
 
 @admin.register(Video)
 class VideoAdmin(admin.ModelAdmin):
-    list_display = ['titulo', 'canal', 'bolaloca_canal', 'stream_id', 'tvtvhd_id', 'destacado', 'fecha_publicacion']
-    list_filter = ['canal', 'ligas', 'destacado', 'activo']
+    list_display = ['titulo', 'red_canal', 'canal', 'bolaloca_canal', 'stream_id', 'tvtvhd_id', 'destacado', 'fecha_publicacion']
+    list_filter = ['canal__red', 'canal', 'ligas', 'destacado', 'activo']
     search_fields = ['titulo', 'descripcion']
     list_editable = ['destacado']
     filter_horizontal = ['ligas']
     inlines = [EnlaceVideoInline]
     actions = ['generar_enlaces_streaming', 'limpiar_enlaces_streaming', 'actualizar_dominios_streaming']
+
+    @admin.display(description='Red', ordering='canal__red__nombre')
+    def red_canal(self, obj):
+        return obj.canal.red or '—'
 
     @admin.action(description='Generar enlaces de streaming (Bolaloca + Streamx + TvtvHD)')
     def generar_enlaces_streaming(self, request, queryset):
@@ -106,18 +137,38 @@ class PartidoAdmin(admin.ModelAdmin):
     list_display = [
         'fecha', 'hora', 'estado',
         'equipo_local', 'equipo_visitante',
-        'liga_nombre', 'liga_api_id',
-        'canales_bolaloca',
+        'liga_nombre', 'canales_display',
     ]
-    list_editable = ['canales_bolaloca']
-    list_filter = ['fecha', 'estado', 'liga_nombre']
+    list_filter = ['fecha', 'estado', 'liga_nombre', 'canales']
     search_fields = ['equipo_local', 'equipo_visitante', 'liga_nombre']
+    filter_horizontal = ['canales']
     ordering = ['-fecha', 'hora']
     list_per_page = 50
+    fieldsets = [
+        ('Partido', {
+            'fields': [
+                ('equipo_local', 'equipo_visitante'),
+                ('fecha', 'hora', 'estado'),
+                'liga_nombre',
+            ]
+        }),
+        ('Canales que transmiten', {
+            'fields': ['canales'],
+            'description': 'Selecciona los canales que transmitirán este partido.',
+        }),
+        ('Datos técnicos (legacy)', {
+            'fields': ['liga_api_id', 'canales_bolaloca', 'minuto'],
+            'classes': ['collapse'],
+        }),
+    ]
+
+    @admin.display(description='Canales')
+    def canales_display(self, obj):
+        nombres = list(obj.canales.values_list('nombre', flat=True))
+        return ', '.join(nombres) if nombres else '—'
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        # Mostrar primero los de hoy
         from datetime import date
         hoy = date.today()
         from django.db.models import Case, When, IntegerField

@@ -136,77 +136,154 @@
          NAVBAR
          ═══════════════════════════════════════════════ */
       .navbar-custom {
-        background: var(--bg-navbar);
-        border-bottom: 1px solid var(--border);
-        height: 60px;
+        background: linear-gradient(180deg, rgba(8,8,12,0.92) 0%, rgba(8,8,12,0) 100%);
+        border-bottom: none;
+        height: 64px;
         z-index: 1050;
-        backdrop-filter: blur(16px);
+        backdrop-filter: none;
         padding: 0;
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        transition: background 0.35s, backdrop-filter 0.35s;
+      }
+      .navbar-custom.scrolled {
+        background: rgba(8,8,12,0.96);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255,255,255,0.07);
       }
       .navbar-inner {
         display: flex;
         align-items: center;
         justify-content: space-between;
         height: 100%;
-        padding: 0 16px;
+        padding: 0 28px;
+        gap: 16px;
       }
-      .nav-left {
+
+      /* ── Marca ── */
+      .navbar-brand {
         display: flex;
         align-items: center;
-        gap: 12px;
-      }
-      .navbar-brand {
-        color: var(--accent) !important;
+        gap: 8px;
+        color: #fff !important;
         font-weight: 900;
-        font-size: 1.4rem;
-        letter-spacing: -0.5px;
+        font-size: 1.25rem;
+        letter-spacing: -0.3px;
         text-decoration: none;
+        flex-shrink: 0;
       }
+      .brand-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        font-weight: 900;
+        color: #fff;
+        flex-shrink: 0;
+      }
+
+      /* ── Centro ── */
       .nav-center {
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 2px;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
       }
       .nav-pill {
         padding: 6px 16px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: var(--text-secondary);
+        font-size: 0.87rem;
+        font-weight: 500;
+        color: rgba(255,255,255,0.65);
         text-decoration: none;
-        border-radius: 8px;
-        transition: all 0.2s;
+        border-radius: 6px;
+        transition: color 0.15s, background 0.15s;
+        white-space: nowrap;
       }
-      .nav-pill:hover {
-        color: var(--text-primary);
-        background: var(--card-hover);
-      }
-      .nav-pill.active {
-        color: var(--text-primary);
-        background: var(--bg-card);
-      }
+      .nav-pill:hover { color: #fff; background: rgba(255,255,255,0.09); }
+      .nav-pill.active  { color: #fff; font-weight: 700; }
+      .nav-pill--verde  { color: #4ade80 !important; }
+      .nav-pill--verde.active,
+      .nav-pill--verde:hover { color: #86efac !important; background: rgba(74,222,128,0.1) !important; }
+
+      /* ── Derecha ── */
       .nav-right {
         display: flex;
         align-items: center;
         gap: 4px;
+        flex-shrink: 0;
       }
       .nav-icon-btn {
-        width: 38px;
-        height: 38px;
+        width: 36px;
+        height: 36px;
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 8px;
         border: none;
         background: none;
-        color: var(--text-secondary);
-        font-size: 1.15rem;
+        color: rgba(255,255,255,0.65);
+        font-size: 1.1rem;
         cursor: pointer;
-        transition: all 0.2s;
+        transition: color 0.15s, background 0.15s;
         text-decoration: none;
       }
-      .nav-icon-btn:hover {
-        color: var(--text-primary);
-        background: var(--card-hover);
+      .nav-icon-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+      /* ═══════════════════════════════════════════════
+         CATEGORY TABS BAR
+         ═══════════════════════════════════════════════ */
+      .cat-tabs-bar {
+        position: fixed;
+        top: 64px;
+        left: 0;
+        right: 0;
+        z-index: 1040;
+        background: rgba(8,8,12,0.0);
+        transition: background 0.3s, border-color 0.3s;
+        border-bottom: 1px solid transparent;
+        padding: 0 24px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        overflow-x: auto;
+        scrollbar-width: none;
+        gap: 6px;
+      }
+      .cat-tabs-bar::-webkit-scrollbar { display: none; }
+      .cat-tabs-bar.scrolled {
+        background: rgba(8,8,12,0.92);
+        backdrop-filter: blur(16px);
+        border-color: var(--border);
+      }
+      .cat-tab {
+        padding: 5px 18px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.65);
+        border: 1.5px solid rgba(255,255,255,0.15);
+        border-radius: 20px;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: all 0.18s;
+        flex-shrink: 0;
+        background: rgba(255,255,255,0.04);
+      }
+      .cat-tab:hover {
+        color: #fff;
+        border-color: rgba(255,255,255,0.45);
+        background: rgba(255,255,255,0.1);
+      }
+      .cat-tab.active {
+        color: #fff;
+        background: rgba(255,255,255,0.18);
+        border-color: rgba(255,255,255,0.5);
       }
 
       /* ═══════════════════════════════════════════════
@@ -214,9 +291,9 @@
          ═══════════════════════════════════════════════ */
       .sidebar {
         position: fixed;
-        top: 60px;
+        top: 64px;
         left: 0;
-        height: calc(100vh - 60px);
+        height: calc(100vh - 64px);
         width: 70px;
         background: var(--bg-sidebar);
         transition: width 0.3s ease;
@@ -340,9 +417,13 @@
         margin-left: var(
           --sidebar-width-collapsed
         ); /* 70 px siempre en desktop */
-        margin-top: 60px;
+        margin-top: 64px;
         padding: 0;
         transition: margin-left 0.3s ease;
+      }
+      /* When page starts with hero, remove top margin so hero fills screen */
+      .main-content.has-hero {
+        margin-top: 0;
       }
       /* Desktop expandido → desplazar 240 px */
       .main-content.shifted {
@@ -350,14 +431,17 @@
       }
 
       /* ═══════════════════════════════════════════════
-         HERO SLIDER – ESTILO DAZN
+         HERO SLIDER – Disney+ style
          ═══════════════════════════════════════════════ */
       .hero-slider {
         position: relative;
-        height: 520px;
+        height: 90vh;
+        min-height: 520px;
+        max-height: 700px;
         overflow: hidden;
-        margin: 16px 20px 30px;
-        border-radius: 20px;
+        margin: 0;
+        border-radius: 0;
+        margin-top: 0;
       }
       .hero-slider-page {
         height: 420px;
@@ -383,128 +467,232 @@
         z-index: 2;
         pointer-events: auto;
       }
-      .slide::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: inherit;
-        background-size: cover;
-        background-position: center;
-        filter: blur(24px) brightness(0.45);
-        transform: scale(1.08);
-        z-index: 0;
-      }
       .slide img {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        object-position: center center;
-        z-index: 1;
-      }
-      .slide-gradient {
         position: absolute;
         top: 0;
         left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 2;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center top;
+        z-index: 0;
+      }
+      .slide-gradient {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
         background:
           linear-gradient(
             0deg,
-            rgba(0, 0, 0, 0.82) 0%,
-            rgba(0, 0, 0, 0.35) 45%,
-            rgba(0, 0, 0, 0) 72%
+            rgba(8,8,12,0.98) 0%,
+            rgba(8,8,12,0.7) 28%,
+            rgba(8,8,12,0.1) 60%,
+            rgba(8,8,12,0) 100%
           ),
           linear-gradient(
             90deg,
-            rgba(0, 0, 0, 0.55) 0%,
-            rgba(0, 0, 0, 0.2) 35%,
-            rgba(0, 0, 0, 0) 58%
+            rgba(8,8,12,0.88) 0%,
+            rgba(8,8,12,0.55) 30%,
+            rgba(8,8,12,0.1) 60%,
+            rgba(8,8,12,0) 80%
           );
       }
       .slide-content {
         position: absolute;
-        bottom: 28px;
-        left: 24px;
+        bottom: 72px;
+        left: 48px;
         z-index: 3;
-        max-width: 500px;
-        pointer-events: none;
+        max-width: 520px;
+      }
+      .slide-eyebrow {
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.55);
+        margin-bottom: 10px;
       }
       .slide-logo {
-        width: 50px;
-        height: 50px;
-        min-width: 50px;
-        min-height: 50px;
-        max-width: 50px;
-        max-height: 50px;
-        border-radius: 10px;
+        width: 56px;
+        height: 56px;
+        min-width: 56px;
+        min-height: 56px;
+        max-width: 56px;
+        max-height: 56px;
+        border-radius: 12px;
         object-fit: contain;
-        background: #fff;
-        padding: 4px;
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        margin-bottom: 12px;
+        background: rgba(255,255,255,0.1);
+        padding: 5px;
+        border: 1.5px solid rgba(255,255,255,0.18);
+        margin-bottom: 14px;
+        backdrop-filter: blur(8px);
       }
       .slide-title {
-        font-size: 1.6rem;
-        font-weight: 800;
+        font-size: 2.6rem;
+        font-weight: 900;
         color: #fff;
-        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
-        line-height: 1.15;
-        margin-bottom: 8px;
+        text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+        line-height: 1.08;
+        margin-bottom: 12px;
+        letter-spacing: -0.5px;
       }
       .slide-desc {
         font-size: 0.95rem;
-        color: rgba(255, 255, 255, 0.75);
-        line-height: 1.5;
-        margin-bottom: 16px;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.55;
+        margin-bottom: 22px;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        max-width: 420px;
+      }
+      .slide-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
       }
       .slide-btn {
-        display: inline-block;
-        padding: 10px 28px;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 11px 28px;
         background: #ffffff;
         color: #070e16;
         font-weight: 700;
-        font-size: 0.9rem;
-        border-radius: 4px;
+        font-size: 0.92rem;
+        border-radius: 6px;
         text-decoration: none;
         transition: all 0.2s;
       }
       .slide-btn:hover {
-        background: #0082e6;
+        background: rgba(255,255,255,0.88);
+        color: #070e16;
+      }
+      .slide-btn-outline {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 11px 24px;
+        background: rgba(255,255,255,0.12);
         color: #fff;
+        font-weight: 600;
+        font-size: 0.92rem;
+        border-radius: 6px;
+        text-decoration: none;
+        border: 1.5px solid rgba(255,255,255,0.3);
+        transition: all 0.2s;
+        backdrop-filter: blur(4px);
+      }
+      .slide-btn-outline:hover {
+        background: rgba(255,255,255,0.2);
+        border-color: rgba(255,255,255,0.5);
+        color: #fff;
+      }
+      .slide-network-badge {
+        position: absolute;
+        bottom: 72px;
+        right: 48px;
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 6px;
+      }
+      .slide-network-logo {
+        height: 32px;
+        width: auto;
+        max-width: 90px;
+        object-fit: contain;
+        filter: brightness(0) invert(1);
+        opacity: 0.7;
       }
       .slide-fallback {
         width: 100%;
         height: 100%;
         background: linear-gradient(
           135deg,
-          #0a1628 0%,
-          #0d2847 40%,
-          #0082e6 100%
+          #08080c 0%,
+          #0d1a30 45%,
+          #0a2044 100%
         );
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        padding: 0 40px;
+        justify-content: flex-end;
+        padding: 0 48px 80px;
       }
       .slide-fallback .hero-title {
-        font-size: 3.5rem;
+        font-size: 4rem;
         font-weight: 900;
-        letter-spacing: 2px;
-        background: linear-gradient(90deg, #ffffff, #0082e6);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        letter-spacing: -1px;
+        color: #fff;
+        text-shadow: 0 4px 32px rgba(99,102,241,0.4);
       }
       .slide-fallback .hero-subtitle {
         font-size: 1.1rem;
-        color: rgba(255, 255, 255, 0.7);
-        margin-top: 8px;
+        color: rgba(255, 255, 255, 0.55);
+        margin-top: 10px;
+        max-width: 400px;
+        line-height: 1.5;
+      }
+
+      /* ── HERO TABS – centrados sobre el hero (Disney+) ── */
+      .hero-tabs {
+        position: absolute;
+        top: 76px; /* 64px navbar + 12px gap */
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+        display: flex;
+        gap: 2px;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.38);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-radius: 30px;
+        padding: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        white-space: nowrap;
+        max-width: calc(100vw - 200px);
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .hero-tabs::-webkit-scrollbar { display: none; }
+      .hero-tab {
+        padding: 7px 22px;
+        border-radius: 24px;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 0.87rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.18s;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .hero-tab:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .hero-tab.active {
+        background: #fff;
+        color: #08080c;
+      }
+      .hero-tab-logo {
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        object-fit: contain;
+        flex-shrink: 0;
+      }
+      @media (max-width: 768px) {
+        .hero-tabs {
+          top: 70px;
+          max-width: calc(100vw - 32px);
+          padding: 3px;
+        }
+        .hero-tab { padding: 6px 14px; font-size: 0.8rem; }
       }
 
       /* Flechas del slider */
@@ -513,53 +701,49 @@
         top: 50%;
         transform: translateY(-50%);
         z-index: 5;
-        width: 44px;
-        height: 44px;
+        width: 46px;
+        height: 46px;
         border-radius: 50%;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        background: rgba(0, 0, 0, 0.4);
+        border: 1.5px solid rgba(255, 255, 255, 0.2);
+        background: rgba(0, 0, 0, 0.35);
         color: #fff;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.3s;
-        backdrop-filter: blur(4px);
+        transition: all 0.25s;
+        backdrop-filter: blur(8px);
       }
       .slider-arrow:hover {
-        background: rgba(0, 130, 230, 0.7);
-        border-color: #0082e6;
+        background: rgba(255,255,255,0.15);
+        border-color: rgba(255,255,255,0.45);
       }
-      .slider-arrow-left {
-        left: 14px;
-      }
-      .slider-arrow-right {
-        right: 14px;
-      }
+      .slider-arrow-left { left: 20px; }
+      .slider-arrow-right { right: 20px; }
 
       /* Dots del slider */
       .slider-dots {
         position: absolute;
-        bottom: 14px;
+        bottom: 28px;
         left: 50%;
         transform: translateX(-50%);
         z-index: 5;
         display: flex;
-        gap: 6px;
+        gap: 7px;
         align-items: center;
       }
       .dot {
-        width: 8px;
-        height: 8px;
+        width: 7px;
+        height: 7px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.35);
+        background: rgba(255, 255, 255, 0.28);
         cursor: pointer;
-        transition: all 0.4s;
+        transition: all 0.35s;
       }
       .dot.active {
         background: #ffffff;
-        width: 30px;
+        width: 28px;
         border-radius: 4px;
       }
 
@@ -1650,24 +1834,36 @@
         }
 
         .hero-slider {
-          height: 220px;
-          margin: 12px 12px 20px;
-          border-radius: 16px;
+          height: 65vw;
+          min-height: 260px;
+          max-height: 420px;
+          margin: 0;
+          border-radius: 0;
         }
         .hero-slider-page {
-          height: 200px;
+          height: 260px;
         }
         .slide-content {
-          bottom: 18px;
-          left: 16px;
-          max-width: 75%;
+          bottom: 52px;
+          left: 20px;
+          right: 20px;
+          max-width: 100%;
         }
         .slide-title {
-          font-size: 1.1rem;
+          font-size: 1.4rem;
         }
         .slide-desc {
-          font-size: 0.78rem;
+          font-size: 0.82rem;
           -webkit-line-clamp: 2;
+        }
+        .slide-network-badge {
+          bottom: 52px;
+          right: 20px;
+        }
+        .slide-actions { gap: 8px; }
+        .slide-btn, .slide-btn-outline {
+          padding: 9px 18px;
+          font-size: 0.82rem;
         }
         .slide-logo {
           width: 36px;
@@ -1770,7 +1966,7 @@
       .mobile-overlay {
         display: none;
         position: fixed;
-        top: 60px;
+        top: 64px;
         left: 0;
         right: 0;
         bottom: 0;
@@ -1788,56 +1984,37 @@
 
   <body>
     <!-- ── NAVBAR ──────────────────────────────────── -->
-    <nav class="navbar navbar-custom fixed-top">
+    <nav class="navbar navbar-custom fixed-top" id="mainNavbar">
       <div class="navbar-inner">
-        <!-- Left: menu + brand -->
-        <div class="nav-left">
-          <button class="nav-icon-btn" onclick="toggleSidebar()" title="Menú">
-            <i class="bi bi-list" id="menuIcon"></i>
-          </button>
-          <a class="navbar-brand" href="{% url 'canales:home' %}">DepTV</a>
-        </div>
 
-        <!-- Center: navigation links (desktop) -->
-        <div class="nav-center d-none d-lg-flex">
-          <a href="{% url 'canales:home' %}" class="nav-pill active">Inicio</a>
-          <a href="{% url 'canales:agenda' %}" class="nav-pill">Agenda</a>
-          {% now "Y-m-d" as hoy %} {% if hoy >= "2026-05-21" %}
-          <a
-            href="{% url 'canales:mundial' %}"
-            class="nav-pill"
-            style="color: #3cac3b"
-            >Mundial</a
-          >
+        <!-- Logo -->
+        <a class="navbar-brand" href="{% url 'canales:home' %}">
+          <span class="brand-icon">D</span>DepTV
+        </a>
+
+        <!-- Centro: links de navegación (desktop) -->
+        <div class="nav-center d-none d-md-flex">
+          <a href="{% url 'canales:home' %}" class="nav-pill {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Inicio</a>
+          <a href="{% url 'canales:agenda' %}" class="nav-pill {% if request.resolver_match.url_name == 'agenda' %}active{% endif %}">Agenda</a>
+          {% now "Y-m-d" as hoy_nav %}{% if hoy_nav >= "2026-05-21" %}
+          <a href="{% url 'canales:mundial' %}" class="nav-pill nav-pill--verde {% if request.resolver_match.url_name == 'mundial' %}active{% endif %}">Mundial</a>
           {% endif %}
         </div>
 
-        <!-- Right: mobile nav + theme -->
+        <!-- Derecha: acciones -->
         <div class="nav-right">
-          <a
-            href="{% url 'canales:home' %}"
-            class="nav-icon-btn d-lg-none"
-            title="Inicio"
-          >
-            <i class="bi bi-house-fill"></i>
-          </a>
-          <a
-            href="{% url 'canales:agenda' %}"
-            class="nav-icon-btn d-lg-none"
-            title="Agenda"
-          >
-            <i class="bi bi-calendar-event"></i>
-          </a>
-          <button
-            onclick="toggleTheme()"
-            class="nav-icon-btn"
-            title="Cambiar tema"
-          >
+          <button class="nav-icon-btn" title="Buscar"><i class="bi bi-search"></i></button>
+          <button onclick="toggleTheme()" class="nav-icon-btn" title="Cambiar tema">
             <i class="bi bi-circle-half" id="themeIconNav"></i>
           </button>
+          <button class="nav-icon-btn d-md-none" onclick="toggleSidebar()" title="Menú">
+            <i class="bi bi-list"></i>
+          </button>
         </div>
+
       </div>
     </nav>
+
 
     <!-- ── OVERLAY MÓVIL ───────────────────────────── -->
     <div
@@ -1899,7 +2076,7 @@
     </aside>
 
     <!-- ── CONTENIDO PRINCIPAL ─────────────────────── -->
-    <main class="main-content" id="mainContent">
+    <main class="main-content {% block main_class %}{% endblock %}" id="mainContent">
       {% block contenido %}{% endblock %}
     </main>
 
@@ -1960,6 +2137,23 @@
 
       // Sincronizar icono al cargar (el tema ya fue aplicado en <head>)
       updateThemeIcons();
+
+      /* ─── NAVBAR + TABS SCROLL EFFECT ──────────────── */
+      (function () {
+        var navbar = document.getElementById('mainNavbar');
+        var tabsBar = document.getElementById('catTabsBar');
+        function onScroll() {
+          if (window.scrollY > 40) {
+            navbar && navbar.classList.add('scrolled');
+            tabsBar && tabsBar.classList.add('scrolled');
+          } else {
+            navbar && navbar.classList.remove('scrolled');
+            tabsBar && tabsBar.classList.remove('scrolled');
+          }
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+      })();
     </script>
 
     <!-- ═══════════════════════════════════════════

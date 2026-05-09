@@ -1,11 +1,368 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 
 {% block titulo %}{{ canal.nombre }} - DepTV{% endblock %}
 
 {% block contenido %}
-<div class="page-with-bg">
+
+<style>
+/* ── HERO ───────────────────────────────────────────── */
+.dptv-page-hero {
+    position: relative;
+    height: 420px;
+    overflow: hidden;
+    margin-top: 0;
+}
+.dptv-page-hero-bg { position: absolute; inset: 0; }
+.dptv-page-hero-bg .bg-slide {
+    position: absolute; inset: 0;
+    opacity: 0; transition: opacity 1s ease;
+}
+.dptv-page-hero-bg .bg-slide.active { opacity: 1; }
+.dptv-page-hero-bg img {
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center 20%;
+}
+.dptv-page-hero-gradient {
+    position: absolute; inset: 0; z-index: 1;
+    background:
+        linear-gradient(0deg, var(--bg-body) 0%, rgba(8,8,12,0.75) 38%, rgba(8,8,12,0.2) 70%, transparent 100%),
+        linear-gradient(90deg, rgba(8,8,12,0.85) 0%, rgba(8,8,12,0.4) 40%, transparent 70%);
+}
+.dptv-page-hero-content {
+    position: absolute;
+    bottom: 36px; left: 36px;
+    z-index: 2;
+    display: flex; align-items: flex-end; gap: 18px;
+}
+.dptv-page-logo {
+    width: 80px; height: 80px;
+    border-radius: 18px;
+    object-fit: contain;
+    background: rgba(255,255,255,0.1);
+    padding: 10px;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    flex-shrink: 0;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.dptv-page-logo-placeholder {
+    width: 80px; height: 80px;
+    border-radius: 18px;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; font-weight: 900; color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 8px 32px rgba(99,102,241,0.4);
+}
+.dptv-page-title {
+    font-size: 2.4rem; font-weight: 900; color: #fff;
+    letter-spacing: -0.8px; line-height: 1;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+}
+.dptv-page-sub {
+    font-size: 0.85rem; color: rgba(255,255,255,0.5); font-weight: 500;
+}
+.dptv-page-dots {
+    position: absolute; bottom: 16px; left: 50%;
+    transform: translateX(-50%); z-index: 3;
+    display: flex; gap: 6px;
+}
+.dptv-page-dots .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,0.25); cursor: pointer; transition: all 0.3s;
+}
+.dptv-page-dots .dot.active { background: #fff; width: 22px; border-radius: 3px; }
+
+/* ── SECCIÓN GENÉRICA ───────────────────────────────── */
+.dptv-section {
+    padding: 28px 32px 0;
+}
+.dptv-section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+}
+.dptv-section-label {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 1.05rem; font-weight: 800; color: var(--text-primary);
+}
+.dptv-section-label-bar {
+    width: 4px; height: 18px; border-radius: 2px;
+    background: var(--accent); flex-shrink: 0;
+}
+.dptv-live-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239,68,68,0.2);
+    animation: pulse-red 1.4s infinite; flex-shrink: 0;
+}
+@keyframes pulse-red {
+    0%,100% { box-shadow: 0 0 0 3px rgba(239,68,68,0.2); }
+    50%      { box-shadow: 0 0 0 7px rgba(239,68,68,0.06); }
+}
+.dptv-section-link {
+    font-size: 0.82rem; font-weight: 600;
+    color: var(--accent-light); text-decoration: none; transition: color 0.15s;
+    display: flex; align-items: center; gap: 4px;
+}
+.dptv-section-link:hover { color: #fff; }
+
+/* ── TARJETAS DE PARTIDO ────────────────────────────── */
+.dptv-matches-row {
+    display: flex; gap: 12px;
+    overflow-x: auto; scrollbar-width: none; padding-bottom: 4px;
+}
+.dptv-matches-row::-webkit-scrollbar { display: none; }
+.dptv-match-card {
+    flex: 0 0 260px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 18px;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+}
+.dptv-match-card:hover {
+    border-color: rgba(255,255,255,0.18);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+}
+.dptv-match-card--vivo { border-left: 3px solid #ef4444; }
+.dptv-match-liga {
+    font-size: 0.7rem; font-weight: 700;
+    color: var(--text-dim); text-transform: uppercase;
+    letter-spacing: 1px; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis;
+}
+.dptv-match-divider {
+    height: 1px; background: var(--border); margin: 0 -2px;
+}
+.dptv-match-teams { display: flex; flex-direction: column; gap: 8px; }
+.dptv-match-team {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.9rem; font-weight: 600; color: var(--text-primary);
+}
+.dptv-match-team img {
+    width: 22px; height: 22px; object-fit: contain; flex-shrink: 0;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3));
+}
+.dptv-match-team-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dptv-match-team-score {
+    font-size: 1.1rem; font-weight: 900; color: #fff;
+    min-width: 18px; text-align: right;
+}
+.dptv-match-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 2px;
+}
+.dptv-match-status {
+    font-size: 0.72rem; font-weight: 700;
+    padding: 4px 10px; border-radius: 20px;
+    display: inline-flex; align-items: center; gap: 5px;
+}
+.dptv-match-status.vivo {
+    background: rgba(239,68,68,0.15); color: #f87171;
+}
+.dptv-match-status.ns {
+    background: rgba(255,255,255,0.07); color: var(--text-secondary);
+}
+.dptv-match-status.ft {
+    background: rgba(255,255,255,0.05); color: var(--text-dim);
+}
+.dptv-match-ver {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 0.78rem; font-weight: 700;
+    color: var(--accent-light); text-decoration: none; transition: color 0.15s;
+}
+.dptv-match-ver:hover { color: #fff; }
+.dptv-live-section { padding: 28px 32px 0; }
+
+/* ── CARRUSEL DE VIDEOS ─────────────────────────────── */
+.dptv-row { margin-bottom: 40px; }
+.dptv-row-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 32px 14px;
+}
+.dptv-row-title {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 1.05rem; font-weight: 800; color: var(--text-primary);
+}
+.dptv-row-title-bar {
+    width: 4px; height: 18px; border-radius: 2px;
+    background: var(--accent); flex-shrink: 0;
+}
+.dptv-row-title img {
+    width: 24px; height: 24px; border-radius: 6px; object-fit: contain;
+}
+.dptv-carousel-wrap { position: relative; }
+.dptv-carousel {
+    display: flex; gap: 14px;
+    overflow-x: auto; scroll-behavior: smooth;
+    scrollbar-width: none;
+    padding: 4px 32px 12px;
+}
+.dptv-carousel::-webkit-scrollbar { display: none; }
+.dptv-carousel-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    z-index: 5; width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    background: rgba(8,8,12,0.8);
+    color: #fff; font-size: 1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+.dptv-carousel-btn:hover { background: var(--accent); border-color: var(--accent); }
+.dptv-carousel-btn.left { left: 4px; }
+.dptv-carousel-btn.right { right: 4px; }
+
+/* ── TARJETA DE VIDEO – estilo Disney+ ──────────────── */
+.dptv-card {
+    flex: 0 0 260px;
+    text-decoration: none;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 16/9;
+    background: #0d0d14;
+    transition: transform 0.22s, box-shadow 0.22s;
+    flex-shrink: 0;
+}
+.dptv-card:hover {
+    transform: scale(1.06) translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.7);
+    z-index: 2;
+}
+/* La imagen llena toda la tarjeta */
+.dptv-card-thumb {
+    position: absolute;
+    inset: 0;
+}
+.dptv-card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+    display: block;
+}
+.dptv-card:hover .dptv-card-thumb img { transform: scale(1.04); }
+.dptv-card-thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    color: var(--text-dim);
+    background: var(--bg-hover);
+}
+/* Gradiente para leer el título */
+.dptv-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        0deg,
+        rgba(0,0,0,0.82) 0%,
+        rgba(0,0,0,0.3) 45%,
+        rgba(0,0,0,0) 70%
+    );
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 12px;
+    transition: background 0.2s;
+}
+.dptv-card:hover .dptv-card-overlay {
+    background: linear-gradient(
+        0deg,
+        rgba(0,0,0,0.9) 0%,
+        rgba(0,0,0,0.45) 50%,
+        rgba(0,0,0,0.1) 80%
+    );
+}
+/* Play centrado al hacer hover */
+.dptv-card-play-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+.dptv-card-play {
+    font-size: 2.4rem;
+    color: #fff;
+    opacity: 0;
+    transform: scale(0.7);
+    transition: all 0.2s;
+    filter: drop-shadow(0 0 14px rgba(0,0,0,0.7));
+}
+.dptv-card:hover .dptv-card-play { opacity: 1; transform: scale(1); }
+/* Badge EN VIVO */
+.dptv-card-live-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 3px 9px;
+    border-radius: 20px;
+    letter-spacing: 0.6px;
+    z-index: 3;
+}
+/* Título superpuesto en el gradiente */
+.dptv-card-info {
+    position: relative;
+    z-index: 2;
+}
+.dptv-card-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.6);
+}
+.dptv-card-meta {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.5);
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+/* ── VACÍO ──────────────────────────────────────────── */
+.dptv-empty {
+    padding: 48px 28px;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.92rem;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────── */
+@media (max-width: 768px) {
+    .dptv-page-hero { height: 260px; }
+    .dptv-page-hero-content { left: 20px; bottom: 20px; gap: 12px; }
+    .dptv-page-logo, .dptv-page-logo-placeholder { width: 56px; height: 56px; border-radius: 12px; }
+    .dptv-page-title { font-size: 1.5rem; }
+    .dptv-section { padding: 20px 16px 0; }
+    .dptv-live-section { padding: 20px 16px 0; }
+    .dptv-row-header { padding: 20px 16px 12px; }
+    .dptv-carousel { padding: 4px 16px 12px; }
+    .dptv-card { flex: 0 0 180px; }
+    .dptv-match-card { flex: 0 0 220px; }
+}
+</style>
+
+<!-- HERO DEL CANAL -->
+<div class="dptv-page-hero" id="pageHero">
     {% if banners %}
-    <div class="page-bg" id="pageBg">
+    <div class="dptv-page-hero-bg" id="pageBg">
         {% for banner in banners %}
         <div class="bg-slide {% if forloop.first %}active{% endif %}">
             <img src="{{ banner.imagen.url }}" alt="{{ banner.titulo }}">
@@ -13,101 +370,125 @@
         {% endfor %}
     </div>
     {% endif %}
-
-    <div class="page-bg-gradient"></div>
-
-    <div class="page-content">
-        <div class="page-header">
-            <div class="page-header-top">
-                {% if canal.logo %}
-                <img src="{{ canal.logo.url }}" class="page-header-logo" alt="{{ canal.nombre }}">
-                {% endif %}
-                <h1 class="page-header-title">{{ canal.nombre }}</h1>
-            </div>
+    <div class="dptv-page-hero-gradient"></div>
+    <div class="dptv-page-hero-content">
+        {% if canal.logo %}
+        <img src="{{ canal.logo.url }}" class="dptv-page-logo" alt="{{ canal.nombre }}">
+        {% else %}
+        <div class="dptv-page-logo-placeholder">{{ canal.nombre|first }}</div>
+        {% endif %}
+        <div class="dptv-page-info">
+            <div class="dptv-page-title">{{ canal.nombre }}</div>
             {% if canal.descripcion %}
-            <p class="page-header-desc">{{ canal.descripcion }}</p>
+            <div class="dptv-page-sub">{{ canal.descripcion }}</div>
+            {% elif canal.red %}
+            <div class="dptv-page-sub">{{ canal.red.nombre }}</div>
             {% endif %}
         </div>
+    </div>
+    {% if banners|length > 1 %}
+    <div class="dptv-page-dots" id="pageDots"></div>
+    {% endif %}
+</div>
 
-        {% if banners|length > 1 %}
-        <div class="page-bg-dots" id="pageDots"></div>
-        {% endif %}
-
-        {% if partidos_hoy_canal %}
-        <div class="canal-hoy">
-            <div class="canal-hoy-header">
-                <span class="canal-hoy-dot"></span>
-                <span class="canal-hoy-title">Hoy en este canal</span>
-                <a href="{% url 'canales:agenda' %}" class="canal-hoy-link">Ver agenda <i class="bi bi-arrow-right"></i></a>
-            </div>
-            <div class="canal-hoy-list">
-                {% for partido in partidos_hoy_canal %}
-                <div class="canal-partido-row">
-                    <div class="canal-partido-estado">
-                        {% if partido.estado == 'NS' %}
-                            <span class="cp-hora">{{ partido.hora|time:'H:i' }}</span>
-                        {% elif partido.estado == 'FT' or partido.estado == 'AET' or partido.estado == 'PEN' %}
-                            <span class="cp-fin">FIN</span>
-                        {% else %}
-                            <span class="cp-vivo"><span class="cp-pulse"></span> VIVO</span>
-                        {% endif %}
-                    </div>
-                    <div class="canal-partido-liga">
-                        {% if partido.liga_logo %}
-                        <img src="{{ partido.liga_logo }}" alt="{{ partido.liga_nombre }}" class="cp-liga-logo">
-                        {% endif %}
-                        <span class="cp-liga-nombre">{{ partido.liga_nombre }}</span>
-                    </div>
-                    <div class="canal-partido-equipos">
-                        <div class="cp-equipo">
-                            {% if partido.equipo_local_logo %}<img src="{{ partido.equipo_local_logo }}" alt="">{% endif %}
-                            <span>{{ partido.equipo_local }}</span>
-                            {% if partido.goles_local != None %}<strong>{{ partido.goles_local }}</strong>{% endif %}
-                        </div>
-                        <span class="cp-vs">vs</span>
-                        <div class="cp-equipo">
-                            {% if partido.equipo_visitante_logo %}<img src="{{ partido.equipo_visitante_logo }}" alt="">{% endif %}
-                            <span>{{ partido.equipo_visitante }}</span>
-                            {% if partido.goles_visitante != None %}<strong>{{ partido.goles_visitante }}</strong>{% endif %}
-                        </div>
-                    </div>
-                    <div class="canal-partido-ver">
-                        {% for video in partido.canales_transmision %}
-                            {% if video.canal_id == canal.id %}
-                            <a href="{% url 'canales:detalle_video' video.pk %}" class="cp-ver-btn">
-                                <i class="bi bi-play-circle-fill"></i> Ver
-                            </a>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
+<!-- PARTIDOS DE HOY -->
+{% if partidos_hoy_canal %}
+<div class="dptv-live-section">
+    <div class="dptv-section-header">
+        <div class="dptv-section-label">
+            <span class="dptv-live-dot"></span>
+            Hoy en este canal
+        </div>
+        <a href="{% url 'canales:agenda' %}" class="dptv-section-link">
+            Ver agenda <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+    <div class="dptv-matches-row">
+        {% for partido in partidos_hoy_canal %}
+        <div class="dptv-match-card {% if partido.estado != 'NS' and partido.estado != 'FT' and partido.estado != 'AET' and partido.estado != 'PEN' %}dptv-match-card--vivo{% endif %}">
+            <div class="dptv-match-liga">{{ partido.liga_nombre }}</div>
+            <div class="dptv-match-divider"></div>
+            <div class="dptv-match-teams">
+                <div class="dptv-match-team">
+                    {% if partido.equipo_local_logo %}<img src="{{ partido.equipo_local_logo }}" alt="">{% endif %}
+                    <span class="dptv-match-team-name">{{ partido.equipo_local }}</span>
+                    {% if partido.goles_local != None %}<span class="dptv-match-team-score">{{ partido.goles_local }}</span>{% endif %}
                 </div>
+                <div class="dptv-match-team">
+                    {% if partido.equipo_visitante_logo %}<img src="{{ partido.equipo_visitante_logo }}" alt="">{% endif %}
+                    <span class="dptv-match-team-name">{{ partido.equipo_visitante }}</span>
+                    {% if partido.goles_visitante != None %}<span class="dptv-match-team-score">{{ partido.goles_visitante }}</span>{% endif %}
+                </div>
+            </div>
+            <div class="dptv-match-footer">
+                {% if partido.estado == 'NS' %}
+                <span class="dptv-match-status ns"><i class="bi bi-clock"></i> {{ partido.hora|time:'H:i' }}</span>
+                {% elif partido.estado == 'FT' or partido.estado == 'AET' or partido.estado == 'PEN' %}
+                <span class="dptv-match-status ft"><i class="bi bi-check2-circle"></i> Finalizado</span>
+                {% else %}
+                <span class="dptv-match-status vivo"><i class="bi bi-broadcast"></i> En vivo</span>
+                {% endif %}
+                {% for video in partido.canales_transmision %}
+                    {% if video.canal_id == canal.id %}
+                    <a href="{% url 'canales:detalle_video' video.pk %}" class="dptv-match-ver">
+                        <i class="bi bi-play-circle-fill"></i> Ver
+                    </a>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>
-        {% endif %}
-
-        <div class="video-grid" style="margin-top: 30px;">
-            {% for video in videos %}
-            <a href="{% url 'canales:detalle_video' video.pk %}" class="carousel-card">
-                <div class="card-thumb">
-                    {% if video.thumbnail_url %}
-                    <img src="{{ video.thumbnail_url }}" alt="{{ video.titulo }}">
-                    {% else %}
-                    <div class="thumb-placeholder"><i class="bi bi-play-btn-fill"></i></div>
-                    {% endif %}
-                    <div class="card-overlay"><i class="bi bi-play-circle-fill play-icon"></i></div>
-                    {% if video.destacado %}
-                    <span class="live-badge"><i class="bi bi-broadcast"></i> EN VIVO</span>
-                    {% endif %}
-                </div>
-                <div class="card-info"><p class="card-title-text">{{ video.titulo }}</p></div>
-            </a>
-            {% empty %}
-            <p class="text-muted">Este canal no tiene videos todavia.</p>
-            {% endfor %}
-        </div>
+        {% endfor %}
     </div>
 </div>
+{% endif %}
+
+<!-- CARRUSELES DE VIDEOS POR LIGA -->
+{% if filas_canal %}
+    {% for fila in filas_canal %}
+    <div class="dptv-row">
+        <div class="dptv-row-header">
+            <div class="dptv-row-title">
+                <span class="dptv-row-title-bar"></span>
+                {% if fila.logo %}<img src="{{ fila.logo }}" alt="">{% endif %}
+                {{ fila.titulo }}
+            </div>
+        </div>
+        <div class="dptv-carousel-wrap">
+            <button class="dptv-carousel-btn left" onclick="scrollCarousel(this, -1)"><i class="bi bi-chevron-left"></i></button>
+            <div class="dptv-carousel">
+                {% for video in fila.videos %}
+                <a href="{% url 'canales:detalle_video' video.pk %}" class="dptv-card">
+                    {% if video.destacado %}
+                    <span class="dptv-card-live-badge"><i class="bi bi-broadcast"></i> EN VIVO</span>
+                    {% endif %}
+                    <div class="dptv-card-thumb">
+                        {% if video.thumbnail_url %}
+                        <img src="{{ video.thumbnail_url }}" alt="{{ video.titulo }}">
+                        {% else %}
+                        <div class="dptv-card-thumb-placeholder"><i class="bi bi-play-btn-fill"></i></div>
+                        {% endif %}
+                    </div>
+                    <div class="dptv-card-overlay">
+                        <div class="dptv-card-info">
+                            <div class="dptv-card-title">{{ video.titulo }}</div>
+                        </div>
+                    </div>
+                    <div class="dptv-card-play-wrap">
+                        <i class="bi bi-play-circle-fill dptv-card-play"></i>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            <button class="dptv-carousel-btn right" onclick="scrollCarousel(this, 1)"><i class="bi bi-chevron-right"></i></button>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+<div class="dptv-empty">
+    <i class="bi bi-play-btn" style="font-size:2.5rem;display:block;margin-bottom:12px;opacity:0.3"></i>
+    Este canal no tiene videos todavía.
+</div>
+{% endif %}
 
 {% if banners|length > 1 %}
 <script>
@@ -115,39 +496,35 @@
     var slides = document.querySelectorAll('#pageBg .bg-slide');
     var dotsContainer = document.getElementById('pageDots');
     if (!slides.length || slides.length < 2) return;
-
-    var current = 0;
-    var total = slides.length;
-    var timer;
+    var current = 0, total = slides.length, timer;
     var dots = [];
-
     for (var i = 0; i < total; i++) {
         var dot = document.createElement('span');
         dot.className = 'dot' + (i === 0 ? ' active' : '');
-        dot.setAttribute('data-index', i);
-        dot.addEventListener('click', function() {
-            goTo(parseInt(this.getAttribute('data-index')));
-        });
+        dot.dataset.index = i;
+        dot.addEventListener('click', function() { goTo(+this.dataset.index); });
         dotsContainer.appendChild(dot);
         dots.push(dot);
     }
-
-    function goTo(index) {
+    function goTo(idx) {
         slides[current].classList.remove('active');
         dots[current].classList.remove('active');
-        current = ((index % total) + total) % total;
+        current = ((idx % total) + total) % total;
         slides[current].classList.add('active');
         dots[current].classList.add('active');
-        resetTimer();
-    }
-
-    function resetTimer() {
         clearInterval(timer);
         timer = setInterval(function() { goTo(current + 1); }, 6000);
     }
-
-    resetTimer();
+    timer = setInterval(function() { goTo(current + 1); }, 6000);
 })();
 </script>
 {% endif %}
+
+<script>
+function scrollCarousel(btn, dir) {
+    var carousel = btn.parentElement.querySelector('.dptv-carousel');
+    carousel.scrollBy({ left: dir * 650, behavior: 'smooth' });
+}
+</script>
+
 {% endblock %}

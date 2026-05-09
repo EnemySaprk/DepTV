@@ -115,49 +115,33 @@ body {
 
 /* ─── NAVBAR ─────────────────────────────────────────────────── */
 .navbar-custom {
-  background: var(--bg-navbar) !important;
-  backdrop-filter: saturate(180%) blur(24px) !important;
-  -webkit-backdrop-filter: saturate(180%) blur(24px) !important;
-  border-bottom: 1px solid var(--border) !important;
-  height: 54px !important;
-  box-shadow: 0 1px 0 var(--border) !important;
+  height: 64px !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
 }
-
-/* Marca con gradiente */
+.navbar-custom.scrolled {
+  backdrop-filter: saturate(180%) blur(20px) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+}
 .navbar-brand {
-  background: var(--gradient-text) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  background-clip: text !important;
-  font-weight: 900 !important;
-  font-size: 1.3rem !important;
-  letter-spacing: -0.5px !important;
+  background: none !important;
+  -webkit-text-fill-color: #fff !important;
+  color: #fff !important;
 }
-
-.nav-pill {
-  font-size: 0.82rem !important;
-  font-weight: 500 !important;
-  color: var(--text-2) !important;
-  border-radius: var(--r-sm) !important;
-  padding: 5px 13px !important;
-  transition: all var(--t-fast) var(--ease) !important;
-}
-.nav-pill:hover { color: var(--text-1) !important; background: var(--bg-elevated) !important; }
-.nav-pill.active { color: var(--text-1) !important; background: var(--bg-elevated) !important; font-weight: 600 !important; }
-
+.nav-pill { transition: color 0.15s, background 0.15s !important; }
+.nav-pill.active { font-weight: 700 !important; background: none !important; }
 .nav-icon-btn {
-  width: 33px !important; height: 33px !important;
-  border-radius: var(--r-sm) !important;
-  color: var(--text-2) !important;
-  font-size: 1rem !important;
-  transition: all var(--t-fast) var(--ease) !important;
+  width: 36px !important; height: 36px !important;
+  border-radius: 8px !important;
+  color: rgba(255,255,255,0.65) !important;
+  font-size: 1.1rem !important;
 }
-.nav-icon-btn:hover { color: var(--text-1) !important; background: var(--bg-elevated) !important; }
+.nav-icon-btn:hover { color: #fff !important; background: rgba(255,255,255,0.1) !important; }
 
 /* ─── SIDEBAR ────────────────────────────────────────────────── */
 .sidebar {
-  top: 54px !important;
-  height: calc(100vh - 54px) !important;
+  top: 64px !important;
+  height: calc(100vh - 64px) !important;
   width: var(--sidebar-width-collapsed) !important;
   background: var(--bg-sidebar) !important;
   border-right: 1px solid var(--border) !important;
@@ -190,48 +174,58 @@ body {
 /* ─── LAYOUT ─────────────────────────────────────────────────── */
 .main-content {
   margin-left: var(--sidebar-width-collapsed) !important;
-  margin-top: 54px !important;
+  margin-top: 64px !important;
   transition: margin-left var(--t-base) var(--ease) !important;
 }
+.main-content.has-hero { margin-top: 0 !important; }
 .main-content.shifted { margin-left: var(--sidebar-width-expanded) !important; }
 
 /* ─── HERO SLIDER ────────────────────────────────────────────── */
 .hero-slider {
-  height: 460px !important;
-  margin: 16px 20px 36px !important;
-  border-radius: 20px !important;
+  height: 90vh !important;
+  min-height: 520px !important;
+  max-height: 700px !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
 }
 @media (max-width: 768px) {
-  .hero-slider { height: 220px !important; margin: 12px 12px 20px !important; border-radius: 16px !important; }
+  .hero-slider {
+    height: 65vw !important;
+    min-height: 260px !important;
+    max-height: 420px !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
 }
 
-.slide img { filter: brightness(0.88) !important; }
+.slide img { filter: none !important; object-fit: cover !important; }
 
 .slide-gradient {
   background:
-    linear-gradient(0deg,  rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.35) 45%, transparent 72%),
-    linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.2) 35%, transparent 58%)
+    linear-gradient(0deg, rgba(8,8,12,0.98) 0%, rgba(8,8,12,0.7) 28%, rgba(8,8,12,0.1) 60%, transparent 100%),
+    linear-gradient(90deg, rgba(8,8,12,0.88) 0%, rgba(8,8,12,0.55) 30%, rgba(8,8,12,0.1) 60%, transparent 80%)
   !important;
 }
 
 .slide-title {
-  font-size: 1.7rem !important;
-  font-weight: 800 !important;
-  letter-spacing: -0.3px !important;
-  line-height: 1.15 !important;
+  font-size: 2.6rem !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.5px !important;
+  line-height: 1.08 !important;
 }
 
 .slide-btn {
-  background: var(--gradient) !important;
-  color: #fff !important;
-  border-radius: var(--r-pill) !important;
+  background: #ffffff !important;
+  color: #08080c !important;
+  border-radius: 6px !important;
   padding: 11px 28px !important;
-  font-size: 0.85rem !important;
+  font-size: 0.92rem !important;
   font-weight: 700 !important;
-  box-shadow: var(--shadow-accent) !important;
+  box-shadow: none !important;
   transition: opacity var(--t-fast) !important;
   border: none !important;
 }
+.slide-btn:hover { background: rgba(255,255,255,0.88) !important; color: #08080c !important; }
 .slide-btn:hover { opacity: 0.88 !important; color: #fff !important; }
 
 .slider-arrow {

@@ -57,9 +57,33 @@ class CanalBolaloca(models.Model):
         return f'https://bolaloca.my/player/3/{self.numero}'
 
 
+class RedCanal(models.Model):
+    nombre = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True)
+    logo = models.ImageField(upload_to='redes/', blank=True, null=True)
+    activa = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['nombre']
+        verbose_name = 'Red / Marca'
+        verbose_name_plural = 'Redes / Marcas'
+
+    def __str__(self):
+        return self.nombre
+
+
 class Canal(models.Model):
     nombre = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
+    red = models.ForeignKey(
+        RedCanal, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='canales',
+        verbose_name='Red / Marca',
+    )
+    ligas = models.ManyToManyField(
+        Liga, blank=True, related_name='canales',
+        verbose_name='Competiciones que transmite',
+    )
     logo = models.ImageField(upload_to='canales/', blank=True, null=True)
     url_sitio = models.URLField(blank=True)
     descripcion = models.TextField(blank=True)
@@ -279,6 +303,11 @@ class Partido(models.Model):
         help_text='Minuto actual del partido (solo durante partidos en vivo)',
     )
 
+    canales = models.ManyToManyField(
+        'Canal', blank=True, related_name='partidos',
+        verbose_name='Canales que transmiten',
+    )
+
     # tvtvhd_id → bolaloca número
     _MAPEO_TVTVHD = {
         56: 'dazn1',
@@ -312,12 +341,20 @@ class Partido(models.Model):
 
         pks = set()
 
-        if self.canales_bolaloca:
+        # Nuevo sistema: canales asignados directamente (M2M → Canal → Videos)
+        if self.pk:
+            canales_directos = self.canales.filter(activo=True)
+            if canales_directos.exists():
+                pks.update(
+                    Video.objects.filter(activo=True, canal__in=canales_directos)
+                    .values_list('pk', flat=True)
+                )
+
+        # Legado: canales_bolaloca (texto con IDs o títulos)
+        if not pks and self.canales_bolaloca:
             valores = [v.strip() for v in self.canales_bolaloca.split(',') if v.strip()]
 
-            # Verificar si son numeros (bolaloca viejo) o titulos (rusticotv nuevo)
             if valores and valores[0].isdigit():
-                # Formato viejo: numeros de canal bolaloca
                 numeros = [int(n) for n in valores if n.isdigit()]
                 pks.update(
                     Video.objects.filter(activo=True, bolaloca_canal__numero__in=numeros)
@@ -330,7 +367,6 @@ class Partido(models.Model):
                         .values_list('pk', flat=True)
                     )
             else:
-                # Formato nuevo: titulos de video
                 pks.update(
                     Video.objects.filter(activo=True, titulo__in=valores)
                     .values_list('pk', flat=True)

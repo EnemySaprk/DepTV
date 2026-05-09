@@ -178,10 +178,34 @@ def lista_canal(request, slug):
             elif partido.liga_api_id in liga_api_ids:
                 partidos_hoy_canal.append(partido)
 
+    # Agrupar videos por liga para carruseles Disney+
+    filas_canal = []
+    sin_liga = []
+    ligas_vistas = {}
+    for video in videos:
+        ligas_video = list(video.ligas.all())
+        if ligas_video:
+            for liga in ligas_video:
+                if liga.pk not in ligas_vistas:
+                    ligas_vistas[liga.pk] = {'liga': liga, 'videos': []}
+                ligas_vistas[liga.pk]['videos'].append(video)
+        else:
+            sin_liga.append(video)
+
+    if sin_liga:
+        filas_canal.append({'titulo': 'Todos los videos', 'logo': None, 'videos': sin_liga})
+    for entry in ligas_vistas.values():
+        filas_canal.append({
+            'titulo': entry['liga'].nombre,
+            'logo': entry['liga'].logo.url if entry['liga'].logo else None,
+            'videos': entry['videos'],
+        })
+
     context = {
         'canal': canal,
         'banners': banners,
         'videos': videos,
+        'filas_canal': filas_canal,
         'partidos_hoy_canal': partidos_hoy_canal,
     }
     return render(request, 'canal.html', context)
@@ -201,7 +225,16 @@ def lista_liga(request, slug):
         .distinct()
     )
 
-    context = {'liga': liga, 'banners': banners, 'videos': videos}
+    # Agrupar videos por canal para carruseles Disney+
+    canales_vistos = {}
+    for video in videos:
+        cid = video.canal_id
+        if cid not in canales_vistos:
+            canales_vistos[cid] = {'canal': video.canal, 'videos': []}
+        canales_vistos[cid]['videos'].append(video)
+    filas_liga = list(canales_vistos.values())
+
+    context = {'liga': liga, 'banners': banners, 'videos': videos, 'filas_liga': filas_liga}
     return render(request, 'liga.html', context)
 
 

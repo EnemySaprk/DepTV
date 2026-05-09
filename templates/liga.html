@@ -1,11 +1,234 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 
 {% block titulo %}{{ liga.nombre }} - DepTV{% endblock %}
 
 {% block contenido %}
-<div class="page-with-bg">
+
+<style>
+.dptv-page-hero {
+    position: relative;
+    height: 420px;
+    overflow: hidden;
+    margin-top: 0;
+}
+.dptv-page-hero-bg {
+    position: absolute;
+    inset: 0;
+}
+.dptv-page-hero-bg .bg-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+.dptv-page-hero-bg .bg-slide.active { opacity: 1; }
+.dptv-page-hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+}
+.dptv-page-hero-gradient {
+    position: absolute; inset: 0; z-index: 1;
+    background:
+        linear-gradient(0deg, var(--bg-body) 0%, rgba(8,8,12,0.75) 38%, rgba(8,8,12,0.2) 70%, transparent 100%),
+        linear-gradient(90deg, rgba(8,8,12,0.85) 0%, rgba(8,8,12,0.4) 40%, transparent 70%);
+}
+.dptv-page-hero-content {
+    position: absolute;
+    bottom: 36px; left: 36px; z-index: 2;
+    display: flex; align-items: flex-end; gap: 18px;
+}
+.dptv-page-logo {
+    width: 80px; height: 80px; border-radius: 18px;
+    object-fit: contain;
+    background: rgba(255,255,255,0.1);
+    padding: 10px;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    flex-shrink: 0;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.dptv-page-logo-placeholder {
+    width: 80px; height: 80px; border-radius: 18px;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; font-weight: 900; color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 8px 32px rgba(99,102,241,0.4);
+}
+.dptv-page-title {
+    font-size: 2.4rem; font-weight: 900; color: #fff;
+    letter-spacing: -0.8px; line-height: 1; margin-bottom: 6px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+}
+.dptv-page-sub {
+    font-size: 0.85rem; color: rgba(255,255,255,0.5); font-weight: 500;
+}
+.dptv-page-dots {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    gap: 6px;
+}
+.dptv-page-dots .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.dptv-page-dots .dot.active {
+    background: #fff;
+    width: 22px;
+    border-radius: 3px;
+}
+.dptv-row { margin-bottom: 36px; }
+.dptv-row-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 32px 14px;
+}
+.dptv-row-title {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 1.05rem; font-weight: 800; color: var(--text-primary);
+}
+.dptv-row-title-bar {
+    width: 4px; height: 18px; border-radius: 2px;
+    background: var(--accent); flex-shrink: 0; display: inline-block;
+}
+.dptv-row-title img {
+    width: 24px; height: 24px; border-radius: 6px; object-fit: contain;
+}
+.dptv-carousel-wrap { position: relative; }
+.dptv-carousel {
+    display: flex; gap: 14px;
+    overflow-x: auto; scroll-behavior: smooth;
+    scrollbar-width: none; padding: 4px 32px 12px;
+}
+.dptv-carousel::-webkit-scrollbar { display: none; }
+.dptv-carousel-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    z-index: 5; width: 44px; height: 44px; border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    background: rgba(8,8,12,0.8); color: #fff; font-size: 1rem;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+.dptv-carousel-btn:hover { background: var(--accent); border-color: var(--accent); }
+.dptv-carousel-btn.left { left: 4px; }
+.dptv-carousel-btn.right { right: 4px; }
+.dptv-card {
+    flex: 0 0 260px;
+    text-decoration: none;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 16/9;
+    background: #0d0d14;
+    transition: transform 0.22s, box-shadow 0.22s;
+    flex-shrink: 0;
+}
+.dptv-card:hover {
+    transform: scale(1.06) translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.7);
+    z-index: 2;
+}
+.dptv-card-thumb {
+    position: absolute;
+    inset: 0;
+}
+.dptv-card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+    display: block;
+}
+.dptv-card:hover .dptv-card-thumb img { transform: scale(1.04); }
+.dptv-card-thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    color: var(--text-dim);
+    background: var(--bg-hover);
+}
+.dptv-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.3) 45%, rgba(0,0,0,0) 70%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 12px;
+    transition: background 0.2s;
+}
+.dptv-card:hover .dptv-card-overlay {
+    background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.1) 80%);
+}
+.dptv-card-play-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+.dptv-card-play {
+    font-size: 2.4rem;
+    color: #fff;
+    opacity: 0;
+    transform: scale(0.7);
+    transition: all 0.2s;
+    filter: drop-shadow(0 0 14px rgba(0,0,0,0.7));
+}
+.dptv-card:hover .dptv-card-play { opacity: 1; transform: scale(1); }
+.dptv-card-info { position: relative; z-index: 2; }
+.dptv-card-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.6);
+}
+.dptv-card-meta {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.5);
+    font-weight: 500;
+    margin-top: 2px;
+}
+.dptv-empty {
+    padding: 48px 28px;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.92rem;
+}
+@media (max-width: 768px) {
+    .dptv-tabs-wrap { padding: 14px 16px 0; }
+    .dptv-page-hero { height: 200px; }
+    .dptv-page-hero-content { left: 20px; bottom: 20px; gap: 12px; }
+    .dptv-page-logo, .dptv-page-logo-placeholder { width: 52px; height: 52px; border-radius: 10px; }
+    .dptv-page-title { font-size: 1.3rem; }
+    .dptv-row-header { padding: 20px 16px 12px; }
+    .dptv-carousel { padding: 0 16px 8px; }
+    .dptv-card { flex: 0 0 158px; }
+}
+</style>
+
+<!-- HERO DE LA LIGA -->
+<div class="dptv-page-hero">
     {% if banners %}
-    <div class="page-bg" id="pageBg">
+    <div class="dptv-page-hero-bg" id="pageBg">
         {% for banner in banners %}
         <div class="bg-slide {% if forloop.first %}active{% endif %}">
             <img src="{{ banner.imagen.url }}" alt="{{ banner.titulo }}">
@@ -13,48 +236,72 @@
         {% endfor %}
     </div>
     {% endif %}
-
-    <div class="page-bg-gradient"></div>
-
-    <div class="page-content">
-        <div class="page-header">
-            <div class="page-header-top">
-                {% if liga.logo %}
-                <img src="{{ liga.logo.url }}" class="page-header-logo" alt="{{ liga.nombre }}">
-                {% endif %}
-                <h1 class="page-header-title">{{ liga.nombre }}</h1>
-            </div>
+    <div class="dptv-page-hero-gradient"></div>
+    <div class="dptv-page-hero-content">
+        {% if liga.logo %}
+        <img src="{{ liga.logo.url }}" class="dptv-page-logo" alt="{{ liga.nombre }}">
+        {% else %}
+        <div class="dptv-page-logo-placeholder">{{ liga.nombre|first }}</div>
+        {% endif %}
+        <div>
+            <div class="dptv-page-title">{{ liga.nombre }}</div>
             {% if liga.pais %}
-            <p class="page-header-desc">{{ liga.pais }}</p>
+            <div class="dptv-page-sub"><i class="bi bi-geo-alt"></i> {{ liga.pais }}</div>
             {% endif %}
         </div>
+    </div>
+    {% if banners|length > 1 %}
+    <div class="dptv-page-dots" id="pageDots"></div>
+    {% endif %}
+</div>
 
-        {% if banners|length > 1 %}
-        <div class="page-bg-dots" id="pageDots"></div>
-        {% endif %}
-
-        <div class="video-grid" style="margin-top: 30px;">
-            {% for video in videos %}
-            <a href="{% url 'canales:detalle_video' video.pk %}" class="carousel-card">
-                <div class="card-thumb">
-                    {% if video.thumbnail_url %}
-                    <img src="{{ video.thumbnail_url }}" alt="{{ video.titulo }}">
-                    {% else %}
-                    <div class="thumb-placeholder"><i class="bi bi-play-btn-fill"></i></div>
-                    {% endif %}
-                    <div class="card-overlay"><i class="bi bi-play-circle-fill play-icon"></i></div>
-                </div>
-                <div class="card-info">
-                    <p class="card-title-text">{{ video.titulo }}</p>
-                    <span class="card-channel">{{ video.canal.nombre }}</span>
-                </div>
-            </a>
-            {% empty %}
-            <p class="text-muted">No hay videos para esta liga todavia.</p>
-            {% endfor %}
+<!-- CARRUSELES POR CANAL -->
+{% if filas_liga %}
+    {% for fila in filas_liga %}
+    <div class="dptv-row">
+        <div class="dptv-row-header">
+            <div class="dptv-row-title">
+                <span class="dptv-row-title-bar"></span>
+                {% if fila.canal.logo %}
+                <img src="{{ fila.canal.logo.url }}" alt="{{ fila.canal.nombre }}">
+                {% endif %}
+                {{ fila.canal.nombre }}
+            </div>
+        </div>
+        <div class="dptv-carousel-wrap">
+            <button class="dptv-carousel-btn left" onclick="scrollCarousel(this, -1)"><i class="bi bi-chevron-left"></i></button>
+            <div class="dptv-carousel">
+                {% for video in fila.videos %}
+                <a href="{% url 'canales:detalle_video' video.pk %}" class="dptv-card">
+                    <div class="dptv-card-thumb">
+                        {% if video.thumbnail_url %}
+                        <img src="{{ video.thumbnail_url }}" alt="{{ video.titulo }}">
+                        {% else %}
+                        <div class="dptv-card-thumb-placeholder"><i class="bi bi-play-btn-fill"></i></div>
+                        {% endif %}
+                    </div>
+                    <div class="dptv-card-overlay">
+                        <div class="dptv-card-info">
+                            <div class="dptv-card-title">{{ video.titulo }}</div>
+                            <div class="dptv-card-meta">{{ video.canal.nombre }}</div>
+                        </div>
+                    </div>
+                    <div class="dptv-card-play-wrap">
+                        <i class="bi bi-play-circle-fill dptv-card-play"></i>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            <button class="dptv-carousel-btn right" onclick="scrollCarousel(this, 1)"><i class="bi bi-chevron-right"></i></button>
         </div>
     </div>
+    {% endfor %}
+{% else %}
+<div class="dptv-empty">
+    <i class="bi bi-trophy" style="font-size:2.5rem;display:block;margin-bottom:12px;opacity:0.3"></i>
+    No hay videos para esta liga todavía.
 </div>
+{% endif %}
 
 {% if banners|length > 1 %}
 <script>
@@ -62,39 +309,35 @@
     var slides = document.querySelectorAll('#pageBg .bg-slide');
     var dotsContainer = document.getElementById('pageDots');
     if (!slides.length || slides.length < 2) return;
-
-    var current = 0;
-    var total = slides.length;
-    var timer;
+    var current = 0, total = slides.length, timer;
     var dots = [];
-
     for (var i = 0; i < total; i++) {
         var dot = document.createElement('span');
         dot.className = 'dot' + (i === 0 ? ' active' : '');
-        dot.setAttribute('data-index', i);
-        dot.addEventListener('click', function() {
-            goTo(parseInt(this.getAttribute('data-index')));
-        });
+        dot.dataset.index = i;
+        dot.addEventListener('click', function() { goTo(+this.dataset.index); });
         dotsContainer.appendChild(dot);
         dots.push(dot);
     }
-
-    function goTo(index) {
+    function goTo(idx) {
         slides[current].classList.remove('active');
         dots[current].classList.remove('active');
-        current = ((index % total) + total) % total;
+        current = ((idx % total) + total) % total;
         slides[current].classList.add('active');
         dots[current].classList.add('active');
-        resetTimer();
-    }
-
-    function resetTimer() {
         clearInterval(timer);
         timer = setInterval(function() { goTo(current + 1); }, 6000);
     }
-
-    resetTimer();
+    timer = setInterval(function() { goTo(current + 1); }, 6000);
 })();
 </script>
 {% endif %}
+
+<script>
+function scrollCarousel(btn, dir) {
+    var carousel = btn.parentElement.querySelector('.dptv-carousel');
+    carousel.scrollBy({ left: dir * 650, behavior: 'smooth' });
+}
+</script>
+
 {% endblock %}

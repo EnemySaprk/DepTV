@@ -1,5 +1,7 @@
 ﻿{% extends 'base.html' %}
 
+{% block main_class %}has-hero{% endblock %}
+
 {% block contenido %}
 
 <!-- VIVO AHORA — solo si hay partidos en curso -->
@@ -26,25 +28,55 @@
 
 <!-- HERO SLIDER -->
 <section class="hero-slider" id="heroSliderSection">
+
     <div class="slider-track" id="heroSlider">
         {% for banner in banners %}
-        <div class="slide {% if forloop.first %}active{% endif %}" style="background-image: url('{{ banner.imagen.url }}')">
+        <div class="slide {% if forloop.first %}active{% endif %}">
             <img src="{{ banner.imagen.url }}" alt="{{ banner.titulo }}">
             <div class="slide-gradient"></div>
             <div class="slide-content">
+                {% if banner.canal %}
+                <div class="slide-eyebrow">{{ banner.canal.red.nombre|default:banner.canal.nombre }}</div>
+                {% elif banner.liga %}
+                <div class="slide-eyebrow">{{ banner.liga.nombre }}</div>
+                {% endif %}
                 {% if banner.titulo %}
                 <h2 class="slide-title">{{ banner.titulo }}</h2>
                 {% endif %}
                 {% if banner.descripcion %}
                 <p class="slide-desc">{{ banner.descripcion }}</p>
                 {% endif %}
+                <div class="slide-actions">
+                    {% if banner.canal %}
+                    <a href="{% url 'canales:canal' banner.canal.slug %}" class="slide-btn">
+                        <i class="bi bi-play-fill"></i> Ver canal
+                    </a>
+                    {% else %}
+                    <a href="{% url 'canales:agenda' %}" class="slide-btn">
+                        <i class="bi bi-calendar-event"></i> Ver agenda
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'canales:agenda' %}" class="slide-btn-outline">
+                        <i class="bi bi-info-circle"></i> Más info
+                    </a>
+                </div>
             </div>
+            {% if banner.canal and banner.canal.logo %}
+            <div class="slide-network-badge">
+                <img src="{{ banner.canal.logo.url }}" alt="{{ banner.canal.nombre }}" class="slide-network-logo">
+            </div>
+            {% endif %}
         </div>
         {% empty %}
         <div class="slide active">
             <div class="slide-fallback">
-                <h1 class="hero-title">EN VIVO</h1>
-                <p class="hero-subtitle">Todos los canales deportivos en un solo lugar</p>
+                <h1 class="hero-title">DepTV</h1>
+                <p class="hero-subtitle">Fútbol en vivo · Todos los canales deportivos en un lugar</p>
+                <div class="slide-actions" style="margin-top:24px">
+                    <a href="{% url 'canales:agenda' %}" class="slide-btn">
+                        <i class="bi bi-calendar-event"></i> Ver agenda
+                    </a>
+                </div>
             </div>
         </div>
         {% endfor %}
