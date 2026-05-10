@@ -1,0 +1,510 @@
+[
+{
+  "model": "canales.video",
+  "pk": 17,
+  "fields": {
+    "titulo": "ESPN 1",
+    "tipo": "iframe",
+    "url_video": "https://tvtvhd.com/vivo/canales.php?stream=espn",
+    "youtube_id": "",
+    "canal": 1,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/ESPN_FWxLHcP.png",
+    "fecha_publicacion": "2026-02-28T22:29:06.206Z",
+    "destacado": true,
+    "activo": true,
+    "bolaloca_canal": 44,
+    "stream_id": "espn",
+    "tvtvhd_id": "espn",
+    "ligas": [
+      8,
+      6,
+      4,
+      1,
+      2,
+      7,
+      5
+    ]
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 18,
+  "fields": {
+    "titulo": "ESPN 2",
+    "tipo": "iframe",
+    "url_video": "https://tvtvhd.com/vivo/canales.php?stream=espn2",
+    "youtube_id": "",
+    "canal": 1,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/ESPN_2_5OD417J.jpg",
+    "fecha_publicacion": "2026-02-28T22:29:06.237Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": 45,
+    "stream_id": "espn2",
+    "tvtvhd_id": "espn2",
+    "ligas": [
+      8,
+      6,
+      4,
+      1,
+      2,
+      7,
+      5
+    ]
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 19,
+  "fields": {
+    "titulo": "ESPN 3",
+    "tipo": "iframe",
+    "url_video": "https://tvtvhd.com/vivo/canales.php?stream=espn3",
+    "youtube_id": "",
+    "canal": 1,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/ESPN_3_kGRLHId.jpg",
+    "fecha_publicacion": "2026-02-28T22:29:06.268Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": 30,
+    "stream_id": "espn3",
+    "tvtvhd_id": "espn3",
+    "ligas": [
+      8,
+      6,
+      1,
+      2,
+      7,
+      5
+    ]
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 20,
+  "fields": {
+    "titulo": "ESPN 4",
+    "tipo": "iframe",
+    "url_video": "https://tvtvhd.com/vivo/canales.php?stream=espn4",
+    "youtube_id": "",
+    "canal": 1,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/ESPN_FWo2cBJ.jpg",
+    "fecha_publicacion": "2026-02-28T22:29:06.324Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": 54,
+    "stream_id": "espn4",
+    "tvtvhd_id": "espn4",
+    "ligas": [
+      8,
+      6,
+      1,
+      2,
+      7,
+      5
+    ]
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 21,
+  "fields": {
+    "titulo": "ESPN 5",
+    "tipo": "iframe",
+    "url_video": "https://tvtvhd.com/vivo/canales.php?stream=espn5",
+    "youtube_id": "",
+    "canal": 1,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/Diseño_sin_título_1.png",
+    "fecha_publicacion": "2026-02-28T22:29:06.357Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": null,
+    "stream_id": "espn5",
+    "tvtvhd_id": "espn5",
+    "ligas": []
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 22,
+  "fields": {
+    "titulo": "ESPN 6",
+    "tipo": "iframe",
+    "url_video": "https://tvtvhd.com/vivo/canales.php?stream=espn6",
+    "youtube_id": "",
+    "canal": 1,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/Diseño_sin_título_2.png",
+    "fecha_publicacion": "2026-02-28T22:29:06.379Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": null,
+    "stream_id": "espn6",
+    "tvtvhd_id": "espn6",
+    "ligas": []
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 23,
+  "fields": {
+    "titulo": "ESPN 7",
+    "tipo": "iframe",
+    "url_video": "https://tvtvhd.com/vivo/canales.php?stream=espn7",
+    "youtube_id": "",
+    "canal": 1,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/1.png",
+    "fecha_publicacion": "2026-02-28T22:29:06.405Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": null,
+    "stream_id": "espn7",
+    "tvtvhd_id": "espn7",
+    "ligas": []
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 24,
+  "fields": {
+    "titulo": "ESPN Premium",
+    "tipo": "iframe",
+    "url_video": "https://tvtvhd.com/vivo/canales.php?stream=espnpremium",
+    "youtube_id": "",
+    "canal": 1,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/2.png",
+    "fecha_publicacion": "2026-02-28T22:29:06.426Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": 46,
+    "stream_id": "espnpremium",
+    "tvtvhd_id": "espnpremium",
+    "ligas": []
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 25,
+  "fields": {
+    "titulo": "ESPN Deportes",
+    "tipo": "iframe",
+    "url_video": "https://tvtvpl.com/global3.php?stream=espndeportes",
+    "youtube_id": "",
+    "canal": 1,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/ESPN_Deportes_y5BGm7A.jpg",
+    "fecha_publicacion": "2026-02-28T22:29:06.456Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": 30,
+    "stream_id": "espndeportes",
+    "tvtvhd_id": "espndeportes",
+    "ligas": [
+      8,
+      1,
+      7
+    ]
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 26,
+  "fields": {
+    "titulo": "DSports",
+    "tipo": "iframe",
+    "url_video": "https://tvtvhd.com/vivo/canales.php?stream=dsports",
+    "youtube_id": "",
+    "canal": 4,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/ESPN1_w8Nek3a.jpg",
+    "fecha_publicacion": "2026-02-28T22:29:06.485Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": 51,
+    "stream_id": "dsports",
+    "tvtvhd_id": "dsports",
+    "ligas": [
+      4,
+      1
+    ]
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 27,
+  "fields": {
+    "titulo": "DSports 2",
+    "tipo": "iframe",
+    "url_video": "https://tvtvhd.com/vivo/canales.php?stream=dsports2",
+    "youtube_id": "",
+    "canal": 4,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/dsports_2_qVwL0hs.png",
+    "fecha_publicacion": "2026-02-28T22:29:06.516Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": 52,
+    "stream_id": "dsports2",
+    "tvtvhd_id": "dsports2",
+    "ligas": [
+      4,
+      1
+    ]
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 28,
+  "fields": {
+    "titulo": "DSports Plus",
+    "tipo": "iframe",
+    "url_video": "https://tvtvhd.com/vivo/canales.php?stream=dsportsplus",
+    "youtube_id": "",
+    "canal": 4,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/dsports__k4n2lgK.png",
+    "fecha_publicacion": "2026-02-28T22:29:06.545Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": null,
+    "stream_id": "dsportsplus",
+    "tvtvhd_id": "dsportsplus",
+    "ligas": [
+      4,
+      1
+    ]
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 29,
+  "fields": {
+    "titulo": "Win Sports+",
+    "tipo": "iframe",
+    "url_video": "https://la14hd.com/vivo/canales.php?stream=winsportsplus",
+    "youtube_id": "",
+    "canal": 2,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/Captura_de_pantalla_2026-02-21_203953_nWSuM3u.png",
+    "fecha_publicacion": "2026-02-28T22:29:06.568Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": 39,
+    "stream_id": "winsportplus",
+    "tvtvhd_id": "",
+    "ligas": [
+      4,
+      3
+    ]
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 31,
+  "fields": {
+    "titulo": "Win Sports",
+    "tipo": "iframe",
+    "url_video": "https://mediahosting.space/embed/player?config=a45e6d53-d399-4db7-bc49-7740f4a31c7e",
+    "youtube_id": "",
+    "canal": 2,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/Win_sports_v6iixom.jpg",
+    "fecha_publicacion": "2026-02-28T22:29:06.627Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": null,
+    "stream_id": "winsports",
+    "tvtvhd_id": "winsports",
+    "ligas": [
+      3
+    ]
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 32,
+  "fields": {
+    "titulo": "DAZN 1",
+    "tipo": "iframe",
+    "url_video": "https://mediahosting.space/embed/player?config=ca5eb5de-4417-4f98-bbc8-cde37cf77fac",
+    "youtube_id": "",
+    "canal": 3,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/image_IHsw9Z5.jpg",
+    "fecha_publicacion": "2026-02-28T22:29:06.649Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": null,
+    "stream_id": "dazn1",
+    "tvtvhd_id": "dazn1",
+    "ligas": [
+      2
+    ]
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 33,
+  "fields": {
+    "titulo": "DAZN 2",
+    "tipo": "iframe",
+    "url_video": "https://dlstreams.top/stream/stream-446.php",
+    "youtube_id": "",
+    "canal": 3,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/DAZN_2_YBaoWfH.jpg",
+    "fecha_publicacion": "2026-02-28T22:29:06.669Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": null,
+    "stream_id": "dazn2",
+    "tvtvhd_id": "dazn2",
+    "ligas": [
+      2
+    ]
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 36,
+  "fields": {
+    "titulo": "DAZN LaLiga",
+    "tipo": "iframe",
+    "url_video": "https://mediahosting.space/embed/player?config=a435aeda-ed7d-47bb-8df7-5a6f0b20e6a4",
+    "youtube_id": "",
+    "canal": 3,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/DAZN-LA-LIGA_BqH1C3k.png",
+    "fecha_publicacion": "2026-02-28T22:29:06.732Z",
+    "destacado": true,
+    "activo": true,
+    "bolaloca_canal": null,
+    "stream_id": "dazn_laliga",
+    "tvtvhd_id": "dazn_laliga",
+    "ligas": [
+      1
+    ]
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 37,
+  "fields": {
+    "titulo": "M+ LaLiga TV",
+    "tipo": "iframe",
+    "url_video": "https://mediahosting.space/embed/player?config=9a0917c5-174a-4d9a-80be-5d16fc42c13b",
+    "youtube_id": "",
+    "canal": 5,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/Movistar_la_liga_1kEUE8q.jpg",
+    "fecha_publicacion": "2026-02-28T22:29:06.754Z",
+    "destacado": true,
+    "activo": true,
+    "bolaloca_canal": null,
+    "stream_id": "m_laligatv",
+    "tvtvhd_id": "m_laligatv",
+    "ligas": [
+      1
+    ]
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 39,
+  "fields": {
+    "titulo": "Liga de Campeones 1",
+    "tipo": "iframe",
+    "url_video": "https://mediahosting.space/embed/player?config=439f3e7a-b288-410b-a5e9-568a665184e4",
+    "youtube_id": "",
+    "canal": 5,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/Diseño_sin_título.png",
+    "fecha_publicacion": "2026-02-28T22:29:06.799Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": null,
+    "stream_id": "ligadecampeones1",
+    "tvtvhd_id": "ligadecampeones1",
+    "ligas": [
+      1,
+      2,
+      7,
+      5
+    ]
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 40,
+  "fields": {
+    "titulo": "Liga de Campeones 2",
+    "tipo": "iframe",
+    "url_video": "https://cc3.screenistream.xyz:8080/stream/319/index.m3u8?token=T4Nz6WCt2Uwlqma4",
+    "youtube_id": "",
+    "canal": 5,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/Diseño_sin_título_ZzzK7RE.png",
+    "fecha_publicacion": "2026-02-28T22:29:06.819Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": null,
+    "stream_id": "ligadecampeones2",
+    "tvtvhd_id": "ligadecampeones2",
+    "ligas": [
+      1,
+      2,
+      7,
+      5
+    ]
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 42,
+  "fields": {
+    "titulo": "M+ LaLiga TV 2",
+    "tipo": "iframe",
+    "url_video": "https://cc3.screenistream.xyz:8080/stream/323/index.m3u8?token=T4Nz6WCt2Uwlqma4",
+    "youtube_id": "",
+    "canal": 5,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/Movistar_la_liga_ZApTuMl.jpg",
+    "fecha_publicacion": "2026-02-28T23:12:08.959Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": 24,
+    "stream_id": "",
+    "tvtvhd_id": "",
+    "ligas": [
+      1
+    ]
+  }
+},
+{
+  "model": "canales.video",
+  "pk": 44,
+  "fields": {
+    "titulo": "DAZN F1",
+    "tipo": "iframe",
+    "url_video": "https://cc3.screenistream.xyz:8080/stream/312/index.m3u8?token=T4Nz6WCt2Uwlqma4",
+    "youtube_id": "",
+    "canal": 3,
+    "descripcion": "",
+    "thumbnail_custom": "thumbnails/CBZFIHC5SNPXBFZCAHR2PANMHE.jpg",
+    "fecha_publicacion": "2026-03-06T20:51:51.181Z",
+    "destacado": false,
+    "activo": true,
+    "bolaloca_canal": null,
+    "stream_id": "",
+    "tvtvhd_id": "",
+    "ligas": []
+  }
+}
+]
