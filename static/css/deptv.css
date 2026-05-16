@@ -1023,15 +1023,21 @@ body {
   border-bottom: 1px solid var(--border);
 }
 .sb-nav-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 9px 10px; border-radius: var(--r-md); margin-bottom: 2px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 0;
+  justify-content: center;
+  border-radius: var(--r-md); margin-bottom: 2px;
   color: var(--text-2); text-decoration: none;
   transition: background var(--t-fast), color var(--t-fast);
   overflow: hidden; white-space: nowrap;
   font-size: 0.84rem; font-weight: 500;
 }
+.sidebar.expanded .sb-nav-item {
+  padding: 9px 10px;
+  justify-content: flex-start;
+}
 .sb-nav-item i {
-  font-size: 1.05rem; width: 24px; text-align: center; flex-shrink: 0;
+  font-size: 1.1rem; width: 24px; text-align: center; flex-shrink: 0;
 }
 .sb-nav-item:hover { background: var(--bg-elevated); color: var(--text-1); }
 .sb-nav-item.sb-nav-active {
@@ -1040,10 +1046,19 @@ body {
   box-shadow: 0 4px 16px var(--accent-glow);
 }
 .sb-nav-label {
-  opacity: 0; transition: opacity 0.2s; white-space: nowrap;
-  flex: 1; overflow: hidden; text-overflow: ellipsis;
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: max-width 0.25s var(--ease), opacity 0.2s var(--ease);
+  pointer-events: none;
 }
-.sidebar.expanded .sb-nav-label { opacity: 1; }
+.sidebar.expanded .sb-nav-label {
+  max-width: 160px;
+  opacity: 1;
+  pointer-events: auto;
+}
 
 /* Countdown Widget */
 .sb-countdown {
