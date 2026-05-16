@@ -69,13 +69,35 @@
         </div>
         {% empty %}
         <div class="slide active">
-            <div class="slide-fallback">
-                <h1 class="hero-title">DepTV</h1>
-                <p class="hero-subtitle">Fútbol en vivo · Todos los canales deportivos en un lugar</p>
-                <div class="slide-actions" style="margin-top:24px">
-                    <a href="{% url 'canales:agenda' %}" class="slide-btn">
-                        <i class="bi bi-calendar-event"></i> Ver agenda
-                    </a>
+            <div class="slide-fallback slide-fallback--m26">
+                <div class="m26-blob m26-blob-1"></div>
+                <div class="m26-blob m26-blob-2"></div>
+                <div class="m26-blob m26-blob-3"></div>
+                <div class="m26-blob m26-blob-4"></div>
+                <div class="m26-blob m26-blob-5"></div>
+                <div class="m26-blob-overlay"></div>
+                <div class="m26-content">
+                    <div class="m26-eyebrow">Copa Mundial de la FIFA</div>
+                    <div class="m26-title-block">
+                        <span class="m26-title">MUNDIAL</span>
+                        <span class="m26-year">2026™</span>
+                    </div>
+                    <div class="m26-date-tag">11 Junio – 19 Julio 2026</div>
+                    <div class="m26-sedes">
+                        <span class="m26-sede-usa">ESTADOS UNIDOS</span>
+                        <span class="m26-sep-dot">●</span>
+                        <span class="m26-sede-can">CANADÁ</span>
+                        <span class="m26-sep-dot">●</span>
+                        <span class="m26-sede-mex">MÉXICO</span>
+                    </div>
+                    <div class="slide-actions">
+                        <a href="{% url 'canales:agenda' %}" class="slide-btn">
+                            <i class="bi bi-play-fill"></i> Ver en vivo
+                        </a>
+                        <a href="{% url 'canales:agenda' %}" class="slide-btn-outline">
+                            <i class="bi bi-calendar-event"></i> Ver calendario
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -91,13 +113,18 @@
 <!-- PARTIDOS DE HOY -->
 {% if partidos_hoy %}
 <section class="home-partidos-section">
-    <div class="home-partidos-header">
-        <div class="home-partidos-title-wrap">
-            <span class="home-partidos-icon"><i class="bi bi-calendar-event-fill"></i></span>
-            <h5 class="home-partidos-title">Partidos de hoy</h5>
+    <div class="home-section-hdr">
+        <div class="home-section-hdr-left">
+            <div class="home-section-hdr-bar"></div>
+            <div>
+                <div class="home-section-hdr-label">HOY</div>
+                <div class="home-section-hdr-title">Partidos de hoy</div>
+            </div>
         </div>
-        <span id="js-live-ts" class="live-ts"></span>
-        <a href="{% url 'canales:agenda' %}" class="home-partidos-agenda-link">Agenda <i class="bi bi-arrow-right"></i></a>
+        <div style="display:flex;align-items:center;gap:14px;">
+            <span id="js-live-ts" class="live-ts"></span>
+            <a href="{% url 'canales:agenda' %}" class="home-section-hdr-link">Agenda <i class="bi bi-arrow-right"></i></a>
+        </div>
     </div>
     <div class="home-partidos-list">
         {% for partido in partidos_hoy %}

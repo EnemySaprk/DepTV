@@ -144,7 +144,7 @@
         padding: 0;
         position: fixed;
         top: 0; left: 0; right: 0;
-        transition: background 0.35s, backdrop-filter 0.35s;
+        transition: background 0.35s, backdrop-filter 0.35s, transform 0.32s ease, border-color 0.35s;
       }
       .navbar-custom.scrolled {
         background: rgba(8,8,12,0.96);
@@ -152,16 +152,25 @@
         -webkit-backdrop-filter: blur(20px);
         border-bottom: 1px solid rgba(255,255,255,0.07);
       }
+      .navbar-custom.hidden {
+        transform: translateY(-100%);
+      }
       .navbar-inner {
         display: flex;
         align-items: center;
         justify-content: space-between;
         height: 100%;
-        padding: 0 28px;
+        padding: 0 20px;
         gap: 16px;
       }
 
-      /* ── Marca ── */
+      /* ── Izquierda: hamburguesa + marca ── */
+      .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+      }
       .navbar-brand {
         display: flex;
         align-items: center;
@@ -296,11 +305,16 @@
         height: calc(100vh - 64px);
         width: 70px;
         background: var(--bg-sidebar);
-        transition: width 0.3s ease;
+        transition: width 0.3s ease, top 0.32s ease, height 0.32s ease;
         overflow-x: hidden;
         overflow-y: auto;
         z-index: 1040;
         border-right: 1px solid var(--border);
+      }
+      /* Cuando el navbar se oculta, el sidebar sube y ocupa toda la altura */
+      .navbar-custom.hidden ~ aside.sidebar {
+        top: 0;
+        height: 100vh;
       }
       .sidebar::-webkit-scrollbar {
         width: 3px;
@@ -1972,6 +1986,10 @@
         bottom: 0;
         background: rgba(0, 0, 0, 0.7);
         z-index: 1035;
+        transition: top 0.32s ease;
+      }
+      .navbar-custom.hidden ~ .mobile-overlay {
+        top: 0;
       }
       .mobile-overlay.active {
         display: block;
@@ -1987,12 +2005,17 @@
     <nav class="navbar navbar-custom fixed-top" id="mainNavbar">
       <div class="navbar-inner">
 
-        <!-- Logo -->
-        <a class="navbar-brand" href="{% url 'canales:home' %}">
-          <span class="brand-icon">D</span>DepTV
-        </a>
+        <!-- Izquierda: hamburguesa + marca -->
+        <div class="nav-left">
+          <button class="nav-icon-btn" onclick="toggleSidebar()" title="Menú">
+            <i class="bi bi-list" style="font-size:1.3rem;"></i>
+          </button>
+          <a class="navbar-brand" href="{% url 'canales:home' %}">
+            <span class="brand-icon">D</span>DepTV
+          </a>
+        </div>
 
-        <!-- Centro: links de navegación (desktop) -->
+        <!-- Centro: links de navegación -->
         <div class="nav-center d-none d-md-flex">
           <a href="{% url 'canales:home' %}" class="nav-pill {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Inicio</a>
           <a href="{% url 'canales:agenda' %}" class="nav-pill {% if request.resolver_match.url_name == 'agenda' %}active{% endif %}">Agenda</a>
@@ -2006,9 +2029,6 @@
           <button class="nav-icon-btn" title="Buscar"><i class="bi bi-search"></i></button>
           <button onclick="toggleTheme()" class="nav-icon-btn" title="Cambiar tema">
             <i class="bi bi-circle-half" id="themeIconNav"></i>
-          </button>
-          <button class="nav-icon-btn d-md-none" onclick="toggleSidebar()" title="Menú">
-            <i class="bi bi-list"></i>
           </button>
         </div>
 
@@ -2025,6 +2045,39 @@
 
     <!-- ── SIDEBAR ─────────────────────────────────── -->
     <aside class="sidebar" id="sidebar">
+
+      <!-- Navegación principal -->
+      <nav class="sb-main-nav">
+        <a href="{% url 'canales:home' %}" class="sb-nav-item {% if request.resolver_match.url_name == 'home' %}sb-nav-active{% endif %}">
+          <i class="bi bi-house-fill"></i>
+          <span class="sb-nav-label">Inicio</span>
+        </a>
+        <a href="{% url 'canales:agenda' %}" class="sb-nav-item {% if request.resolver_match.url_name == 'agenda' %}sb-nav-active{% endif %}">
+          <i class="bi bi-broadcast"></i>
+          <span class="sb-nav-label">En vivo</span>
+        </a>
+        <a href="{% url 'canales:agenda' %}" class="sb-nav-item">
+          <i class="bi bi-calendar3"></i>
+          <span class="sb-nav-label">Partidos</span>
+        </a>
+        <a href="{% url 'canales:agenda' %}" class="sb-nav-item">
+          <i class="bi bi-grid-fill"></i>
+          <span class="sb-nav-label">Grupos</span>
+        </a>
+        <a href="{% url 'canales:agenda' %}" class="sb-nav-item">
+          <i class="bi bi-people-fill"></i>
+          <span class="sb-nav-label">Equipos</span>
+        </a>
+        <a href="{% url 'canales:agenda' %}" class="sb-nav-item">
+          <i class="bi bi-newspaper"></i>
+          <span class="sb-nav-label">Noticias</span>
+        </a>
+        <a href="{% url 'canales:home' %}" class="sb-nav-item">
+          <i class="bi bi-star-fill"></i>
+          <span class="sb-nav-label">Favoritos</span>
+        </a>
+      </nav>
+
       <!-- Canales -->
       <div class="sb-section">
         <div class="sb-section-title">
@@ -2073,6 +2126,29 @@
         </a>
         {% endfor %}
       </div>
+
+      <!-- Countdown Mundial 2026 -->
+      <div class="sb-countdown">
+        <div class="sb-cd-title">FALTA PARA EL MUNDIAL</div>
+        <div class="sb-cd-row">
+          <div class="sb-cd-block">
+            <span class="sb-cd-num" id="cd-days">—</span>
+            <span class="sb-cd-lbl">días</span>
+          </div>
+          <span class="sb-cd-sep">:</span>
+          <div class="sb-cd-block">
+            <span class="sb-cd-num" id="cd-hours">—</span>
+            <span class="sb-cd-lbl">hrs</span>
+          </div>
+          <span class="sb-cd-sep">:</span>
+          <div class="sb-cd-block">
+            <span class="sb-cd-num" id="cd-mins">—</span>
+            <span class="sb-cd-lbl">min</span>
+          </div>
+        </div>
+        <span class="sb-m26-badge">MUNDIAL 2026™</span>
+      </div>
+
     </aside>
 
     <!-- ── CONTENIDO PRINCIPAL ─────────────────────── -->
@@ -2138,18 +2214,56 @@
       // Sincronizar icono al cargar (el tema ya fue aplicado en <head>)
       updateThemeIcons();
 
-      /* ─── NAVBAR + TABS SCROLL EFFECT ──────────────── */
+      /* ─── COUNTDOWN MUNDIAL 2026 ──────────────────────── */
+      (function () {
+        var target = new Date('2026-06-11T00:00:00');
+        function tick() {
+          var now = new Date();
+          var diff = target - now;
+          if (diff <= 0) return;
+          var days  = Math.floor(diff / 86400000);
+          var hours = Math.floor((diff % 86400000) / 3600000);
+          var mins  = Math.floor((diff % 3600000)  / 60000);
+          var dEl = document.getElementById('cd-days');
+          var hEl = document.getElementById('cd-hours');
+          var mEl = document.getElementById('cd-mins');
+          if (dEl) dEl.textContent = days;
+          if (hEl) hEl.textContent = String(hours).padStart(2,'0');
+          if (mEl) mEl.textContent = String(mins).padStart(2,'0');
+        }
+        tick();
+        setInterval(tick, 30000);
+      })();
+
+      /* ─── NAVBAR SCROLL: solid + auto-hide ──────────── */
       (function () {
         var navbar = document.getElementById('mainNavbar');
         var tabsBar = document.getElementById('catTabsBar');
+        var lastY = 0;
         function onScroll() {
-          if (window.scrollY > 40) {
-            navbar && navbar.classList.add('scrolled');
+          var y = window.scrollY;
+          var goingDown = y > lastY + 4;
+          var goingUp   = y < lastY - 4;
+
+          // Solid background cuando no está en el top
+          if (y > 40) {
+            navbar  && navbar.classList.add('scrolled');
             tabsBar && tabsBar.classList.add('scrolled');
           } else {
-            navbar && navbar.classList.remove('scrolled');
+            navbar  && navbar.classList.remove('scrolled');
             tabsBar && tabsBar.classList.remove('scrolled');
           }
+
+          // Auto-hide: ocultar al bajar, mostrar al subir o en el top
+          if (y <= 10) {
+            navbar && navbar.classList.remove('hidden');
+          } else if (goingDown) {
+            navbar && navbar.classList.add('hidden');
+          } else if (goingUp) {
+            navbar && navbar.classList.remove('hidden');
+          }
+
+          lastY = y;
         }
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
